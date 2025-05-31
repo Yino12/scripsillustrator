@@ -1,5 +1,4 @@
 if (app.documents.length > 0) {
-
     // Documento
     var doc = activeDocument;
     // Contar elementos seleccionados
@@ -182,12 +181,21 @@ if (app.documents.length > 0) {
       restoreDefaultsButton.enabled = true;
     }
 
+    // Añadir grupo de botones de radio para seleccionar el color de las cotas
+    var colorOptionGroup = optionsPanel.add("group");
+    colorOptionGroup.orientation = "row";
+    colorOptionGroup.add("statictext", undefined, "Color de las cotas:");
+    var cyanRadio = colorOptionGroup.add("radiobutton", undefined, "Cian");
+    var magentaRadio = colorOptionGroup.add("radiobutton", undefined, "Magenta");
+    var blackRadio = colorOptionGroup.add("radiobutton", undefined, "Negro");
+    cyanRadio.value = true; // Por defecto, seleccionar cian
+
     // Añadir campos de entrada para cotas personalizadas en la interfaz de usuario
     var customDimensionGroup = optionsPanel.add("group");
     customDimensionGroup.orientation = "row";
-    var customDimensionLabel = customDimensionGroup.add("statictext", undefined, "Cota Personalizada:");
+    var customDimensionLabel = customDimensionGroup.add("statictext", undefined, "Gap:");
     var customDimensionInput = customDimensionGroup.add("edittext", undefined, "");
-    customDimensionInput.helpTip = "Ingrese el valor de la cota personalizada.";
+    customDimensionInput.helpTip = "Ingrese el valor del Gap.";
     customDimensionInput.characters = 10;
 
     // Texto de información
@@ -245,20 +253,11 @@ if (app.documents.length > 0) {
 
     /*=====  Fin de Crear Diálogo  ======*/
 
-    // Capa de especificaciones
-    try {
-      var specsLayer = doc.layers["COTAS"];
-    } catch (err) {
-      var specsLayer = doc.layers.add();
-      specsLayer.name = "COTAS";
-    }
+    // Utilizar la capa activa
+    var specsLayer = doc.activeLayer;
 
     // Define el color directamente
     var color = new CMYKColor();
-    color.cyan = 100;
-    color.magenta = 0;
-    color.yellow = 0;
-    color.black = 0;
 
     // Declarar variable global de decimales
     var decimals;
@@ -295,15 +294,15 @@ if (app.documents.length > 0) {
       var validBlackColor = /^[0-9]{1,3}$/.test(colorInputBlack.text);
       // Si los colores son válidos, establecer variables
       if (validCyanColor && validMagentaColor && validYellowColor && validBlackColor) {
-        color.Cyan = colorInputCyan.text;
-        color.Magenta = colorInputMagenta.text;
-        color.Yellow = colorInputYellow.text;
-        color.Black = colorInputBlack.text;
+        color.cyan = colorInputCyan.text;
+        color.magenta = colorInputMagenta.text;
+        color.yellow = colorInputYellow.text;
+        color.black = colorInputBlack.text;
         // Establecer variables ambientales
-        $.setenv("Specify_defaultColorCyan", color.Cyan);
-        $.setenv("Specify_defaultColorMagenta", color.Magenta);
-        $.setenv("Specify_defaultColorYellow", color.Yellow);
-        $.setenv("Specify_defaultColorBlack", color.Black);
+        $.setenv("Specify_defaultColorCyan", color.cyan);
+        $.setenv("Specify_defaultColorMagenta", color.magenta);
+        $.setenv("Specify_defaultColorYellow", color.yellow);
+        $.setenv("Specify_defaultColorBlack", color.black);
       }
 
       var validDecimalPlaces = /^[0-4]{1}$/.test(decimalPlacesInput.text);
@@ -312,6 +311,24 @@ if (app.documents.length > 0) {
         decimals = decimalPlacesInput.text;
         // Establecer variable ambiental
         $.setenv("Specify_defaultDecimals", decimals);
+      }
+
+      // Establecer el color de las cotas según la selección del usuario
+      if (cyanRadio.value) {
+        color.cyan = 100;
+        color.magenta = 0;
+        color.yellow = 0;
+        color.black = 0;
+      } else if (magentaRadio.value) {
+        color.cyan = 0;
+        color.magenta = 100;
+        color.yellow = 0;
+        color.black = 0;
+      } else if (blackRadio.value) {
+        color.cyan = 0;
+        color.magenta = 0;
+        color.yellow = 0;
+        color.black = 100;
       }
 
       if (selectedItems < 1) {
@@ -390,33 +407,33 @@ if (app.documents.length > 0) {
 
       switch (where) {
         case "Top":
-        a = bound[0];
-        b = bound[2];
-        c = bound[1];
-        xy = "x";
-        dir = 1;
-        break;
+          a = bound[0];
+          b = bound[2];
+          c = bound[1];
+          xy = "x";
+          dir = 1;
+          break;
         case "Right":
-        a = bound[1];
-        b = bound[3];
-        c = bound[2];
-        xy = "y";
-        dir = 1;
-        break;
+          a = bound[1];
+          b = bound[3];
+          c = bound[2];
+          xy = "y";
+          dir = 1;
+          break;
         case "Bottom":
-        a = bound[0];
-        b = bound[2];
-        c = bound[3];
-        xy = "x";
-        dir = -1;
-        break;
+          a = bound[0];
+          b = bound[2];
+          c = bound[3];
+          xy = "x";
+          dir = -1;
+          break;
         case "Left":
-        a = bound[1];
-        b = bound[3];
-        c = bound[0];
-        xy = "y";
-        dir = -1;
-        break;
+          a = bound[1];
+          b = bound[3];
+          c = bound[0];
+          xy = "y";
+          dir = -1;
+          break;
       }
 
       // Crear las líneas de medición
@@ -447,54 +464,54 @@ if (app.documents.length > 0) {
 
         // Añadir cotas personalizadas
         if (customDimensionInput.text) {
-            var customValue = parseFloat(customDimensionInput.text);
-            // Extender la línea horizontal en ambos extremos
-            var extendedLineLeft = new Array(new Array(a, c + (gap + size / 2) * dir));
-            extendedLineLeft.push(new Array(a - convertToPoints(customValue), c + (gap + size / 2) * dir));
-            var extendedLineRight = new Array(new Array(b, c + (gap + size / 2) * dir));
-            extendedLineRight.push(new Array(b + convertToPoints(customValue), c + (gap + size / 2) * dir));
+          var customValue = parseFloat(customDimensionInput.text);
+          // Extender la línea horizontal en ambos extremos
+          var extendedLineLeft = new Array(new Array(a, c + (gap + size / 2) * dir));
+          extendedLineLeft.push(new Array(a - convertToPoints(customValue), c + (gap + size / 2) * dir));
+          var extendedLineRight = new Array(new Array(b, c + (gap + size / 2) * dir));
+          extendedLineRight.push(new Array(b + convertToPoints(customValue), c + (gap + size / 2) * dir));
 
-            var pLeft = doc.pathItems.add();
-            pLeft.setEntirePath(extendedLineLeft);
-            pLeft.strokeDashes = []; // Prevenir líneas de especificación discontinuas
-            setLineStyle(pLeft, getMagentaColor());
+          var pLeft = doc.pathItems.add();
+          pLeft.setEntirePath(extendedLineLeft);
+          pLeft.strokeDashes = []; // Prevenir líneas de especificación discontinuas
+          setLineStyle(pLeft, getMagentaColor());
 
-            var pRight = doc.pathItems.add();
-            pRight.setEntirePath(extendedLineRight);
-            pRight.strokeDashes = []; // Prevenir líneas de especificación discontinuas
-            setLineStyle(pRight, getMagentaColor());
+          var pRight = doc.pathItems.add();
+          pRight.setEntirePath(extendedLineRight);
+          pRight.strokeDashes = []; // Prevenir líneas de especificación discontinuas
+          setLineStyle(pRight, getMagentaColor());
 
-            // Añadir pequeñas líneas verticales al final de las líneas magenta
-            var endLineLeft = new Array(new Array(a - convertToPoints(customValue), c + (gap + size / 2) * dir - size / 2));
-            endLineLeft.push(new Array(a - convertToPoints(customValue), c + (gap + size / 2) * dir + size / 2));
+          // Añadir pequeñas líneas verticales al final de las líneas magenta
+          var endLineLeft = new Array(new Array(a - convertToPoints(customValue), c + (gap + size / 2) * dir - size / 2));
+          endLineLeft.push(new Array(a - convertToPoints(customValue), c + (gap + size / 2) * dir + size / 2));
 
-            var endLineRight = new Array(new Array(b + convertToPoints(customValue), c + (gap + size / 2) * dir - size / 2));
-            endLineRight.push(new Array(b + convertToPoints(customValue), c + (gap + size / 2) * dir + size / 2));
+          var endLineRight = new Array(new Array(b + convertToPoints(customValue), c + (gap + size / 2) * dir - size / 2));
+          endLineRight.push(new Array(b + convertToPoints(customValue), c + (gap + size / 2) * dir + size / 2));
 
-            var pEndLeft = doc.pathItems.add();
-            pEndLeft.setEntirePath(endLineLeft);
-            pEndLeft.strokeDashes = []; // Prevenir líneas de especificación discontinuas
-            setLineStyle(pEndLeft, getMagentaColor());
+          var pEndLeft = doc.pathItems.add();
+          pEndLeft.setEntirePath(endLineLeft);
+          pEndLeft.strokeDashes = []; // Prevenir líneas de especificación discontinuas
+          setLineStyle(pEndLeft, getMagentaColor());
 
-            var pEndRight = doc.pathItems.add();
-            pEndRight.setEntirePath(endLineRight);
-            pEndRight.strokeDashes = []; // Prevenir líneas de especificación discontinuas
-            setLineStyle(pEndRight, getMagentaColor());
+          var pEndRight = doc.pathItems.add();
+          pEndRight.setEntirePath(endLineRight);
+          pEndRight.strokeDashes = []; // Prevenir líneas de especificación discontinuas
+          setLineStyle(pEndRight, getMagentaColor());
 
-            // Añadir texto para la línea magenta izquierda
-            var leftText = specLabel(customValue, a - convertToPoints(customValue) / 2, t.top, getMagentaColor());
-            leftText.contents = customDimensionInput.text + getUnitLabel();
-            leftText.left -= leftText.width / 2;
+          // Añadir texto para la línea magenta izquierda
+          var leftText = specLabel(customValue, a - convertToPoints(customValue) / 2, t.top, getMagentaColor());
+          leftText.contents = customDimensionInput.text + getUnitLabel();
+          leftText.left -= leftText.width / 2;
 
-            // Añadir texto para la línea magenta derecha
-            var rightText = specLabel(customValue, b + convertToPoints(customValue) / 2, t.top, getMagentaColor());
-            rightText.contents = customDimensionInput.text + getUnitLabel();
-            rightText.left -= rightText.width / 2;
+          // Añadir texto para la línea magenta derecha
+          var rightText = specLabel(customValue, b + convertToPoints(customValue) / 2, t.top, getMagentaColor());
+          rightText.contents = customDimensionInput.text + getUnitLabel();
+          rightText.left -= rightText.width / 2;
 
-            // Agrupar línea y texto magenta izquierdo
-            var leftGroup = group(specsLayer, [pLeft, pEndLeft, leftText]);
-            // Agrupar línea y texto magenta derecho
-            var rightGroup = group(specsLayer, [pRight, pEndRight, rightText]);
+          // Agrupar línea y texto magenta izquierdo
+          var leftGroup = group(specsLayer, [pLeft, pEndLeft, leftText]);
+          // Agrupar línea y texto magenta derecho
+          var rightGroup = group(specsLayer, [pRight, pEndRight, rightText]);
         }
       } else {
         // Medición vertical
@@ -526,56 +543,56 @@ if (app.documents.length > 0) {
 
         // Añadir cotas personalizadas
         if (customDimensionInput.text) {
-            var customValue = parseFloat(customDimensionInput.text);
-            // Extender la línea vertical en ambos extremos
-            var extendedLineTop = new Array(new Array(c + (gap + size / 2) * dir, a));
-            extendedLineTop.push(new Array(c + (gap + size / 2) * dir, a - convertToPoints(customValue)));
-            var extendedLineBottom = new Array(new Array(c + (gap + size / 2) * dir, b));
-            extendedLineBottom.push(new Array(c + (gap + size / 2) * dir, b + convertToPoints(customValue)));
+          var customValue = parseFloat(customDimensionInput.text);
+          // Extender la línea vertical en ambos extremos
+          var extendedLineTop = new Array(new Array(c + (gap + size / 2) * dir, a));
+          extendedLineTop.push(new Array(c + (gap + size / 2) * dir, a - convertToPoints(customValue)));
+          var extendedLineBottom = new Array(new Array(c + (gap + size / 2) * dir, b));
+          extendedLineBottom.push(new Array(c + (gap + size / 2) * dir, b + convertToPoints(customValue)));
 
-            var pTop = doc.pathItems.add();
-            pTop.setEntirePath(extendedLineTop);
-            pTop.strokeDashes = []; // Prevenir líneas de especificación discontinuas
-            setLineStyle(pTop, getMagentaColor());
+          var pTop = doc.pathItems.add();
+          pTop.setEntirePath(extendedLineTop);
+          pTop.strokeDashes = []; // Prevenir líneas de especificación discontinuas
+          setLineStyle(pTop, getMagentaColor());
 
-            var pBottom = doc.pathItems.add();
-            pBottom.setEntirePath(extendedLineBottom);
-            pBottom.strokeDashes = []; // Prevenir líneas de especificación discontinuas
-            setLineStyle(pBottom, getMagentaColor());
+          var pBottom = doc.pathItems.add();
+          pBottom.setEntirePath(extendedLineBottom);
+          pBottom.strokeDashes = []; // Prevenir líneas de especificación discontinuas
+          setLineStyle(pBottom, getMagentaColor());
 
           // Añadir pequeñas líneas horizontales al final de las líneas magenta verticales
-            var endLineTop = new Array(new Array(c + (gap + size / 2) * dir - size / 2, a)); // Usar la coordenada y de la línea vertical magenta superior
-            endLineTop.push(new Array(c + (gap + size / 2) * dir + size / 2, a)); // Usar la coordenada y de la línea vertical magenta superior
+          var endLineTop = new Array(new Array(c + (gap + size / 2) * dir - size / 2, a)); // Usar la coordenada y de la línea vertical magenta superior
+          endLineTop.push(new Array(c + (gap + size / 2) * dir + size / 2, a)); // Usar la coordenada y de la línea vertical magenta superior
 
-            var endLineBottom = new Array(new Array(c + (gap + size / 2) * dir - size / 2, b)); // Usar la coordenada y de la línea vertical magenta inferior
-            endLineBottom.push(new Array(c + (gap + size / 2) * dir + size / 2, b)); // Usar la coordenada y de la línea vertical magenta inferior
+          var endLineBottom = new Array(new Array(c + (gap + size / 2) * dir - size / 2, b)); // Usar la coordenada y de la línea vertical magenta inferior
+          endLineBottom.push(new Array(c + (gap + size / 2) * dir + size / 2, b)); // Usar la coordenada y de la línea vertical magenta inferior
 
-            var pEndTop = doc.pathItems.add();
-            pEndTop.setEntirePath(endLineTop);
-            pEndTop.strokeDashes = []; // Prevenir líneas de especificación discontinuas
-            setLineStyle(pEndTop, getMagentaColor());
+          var pEndTop = doc.pathItems.add();
+          pEndTop.setEntirePath(endLineTop);
+          pEndTop.strokeDashes = []; // Prevenir líneas de especificación discontinuas
+          setLineStyle(pEndTop, getMagentaColor());
 
-            var pEndBottom = doc.pathItems.add();
-            pEndBottom.setEntirePath(endLineBottom);
-            pEndBottom.strokeDashes = []; // Prevenir líneas de especificación discontinuas
-            setLineStyle(pEndBottom, getMagentaColor());
+          var pEndBottom = doc.pathItems.add();
+          pEndBottom.setEntirePath(endLineBottom);
+          pEndBottom.strokeDashes = []; // Prevenir líneas de especificación discontinuas
+          setLineStyle(pEndBottom, getMagentaColor());
 
-            // Añadir texto para la línea magenta superior
-            var topText = specLabel(customValue, c + (gap + size / 2) * dir, a - convertToPoints(customValue) / 2, getMagentaColor());
-            topText.contents = customDimensionInput.text + getUnitLabel();
-            topText.left = cianXPosition; // Ajustar la posición en X para que coincida con el texto cian
-            topText.rotate(90, true, false, false, false, Transformation.BOTTOMRIGHT); // Rotar texto 90 grados
+          // Añadir texto para la línea magenta superior
+          var topText = specLabel(customValue, c + (gap + size / 2) * dir, a - convertToPoints(customValue) / 2, getMagentaColor());
+          topText.contents = customDimensionInput.text + getUnitLabel();
+          topText.left = cianXPosition; // Ajustar la posición en X para que coincida con el texto cian
+          topText.rotate(90, true, false, false, false, Transformation.BOTTOMRIGHT); // Rotar texto 90 grados
 
-            // Añadir texto para la línea magenta inferior
-            var bottomText = specLabel(customValue, c + (gap + size / 2) * dir, b + convertToPoints(customValue) / 2, getMagentaColor());
-            bottomText.contents = customDimensionInput.text + getUnitLabel();
-            bottomText.left = cianXPosition; // Ajustar la posición en X para que coincida con el texto cian
-            bottomText.rotate(90, true, false, false, false, Transformation.BOTTOMRIGHT); // Rotar texto 180 grados
+          // Añadir texto para la línea magenta inferior
+          var bottomText = specLabel(customValue, c + (gap + size / 2) * dir, b + convertToPoints(customValue) / 2, getMagentaColor());
+          bottomText.contents = customDimensionInput.text + getUnitLabel();
+          bottomText.left = cianXPosition; // Ajustar la posición en X para que coincida con el texto cian
+          bottomText.rotate(90, true, false, false, false, Transformation.BOTTOMRIGHT); // Rotar texto 180 grados
 
-            // Agrupar línea y texto magenta superior
-            var topGroup = group(specsLayer, [pTop, pEndTop, topText]);
-            // Agrupar línea y texto magenta inferior
-            var bottomGroup = group(specsLayer, [pBottom, pEndBottom, bottomText]);
+          // Agrupar línea y texto magenta superior
+          var topGroup = group(specsLayer, [pTop, pEndTop, topText]);
+          // Agrupar línea y texto magenta inferior
+          var bottomGroup = group(specsLayer, [pBottom, pEndBottom, bottomText]);
         }
       }
 
@@ -594,7 +611,6 @@ if (app.documents.length > 0) {
 
       // volver a bloquear la capa de especificaciones
       specsLayer.locked = false;
-
     }
 
     // Especificar el espacio entre 2 elementos
@@ -867,6 +883,6 @@ if (app.documents.length > 0) {
     break;
   }
 
-  } else { // No hay documento activo
-    alert("No hay objetos para especificar. \nPor favor abra un documento para continuar.")
-  }
+} else { // No hay documento activo
+  alert("No hay objetos para especificar. \nPor favor abra un documento para continuar.")
+}
