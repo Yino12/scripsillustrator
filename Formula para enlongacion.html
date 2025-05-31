@@ -12,13 +12,16 @@
             padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             background-color: #f0f0f0;
+            font-size: 18px;
         }
-        .container {
-            max-width: 400px;
+        .main-container {
+            display: flex;
             width: 100%;
+            gap: 20px;
+        }
+        .historial-container, .form-container, .results-container {
+            flex: 1;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -38,20 +41,24 @@
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            font-size: 18px;
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: inner-spin-button;
+            height: 20px;
+            width: 20px;
         }
         button {
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             margin-top: 10px;
         }
         button:hover {
             background-color: #45a049;
-        }
-        .results {
-            margin-top: 20px;
         }
         .results p {
             margin: 10px 0;
@@ -65,87 +72,120 @@
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
+            font-size: 18px;
         }
         th {
             background-color: #f2f2f2;
+        }
+        tr {
+            position: relative;
         }
         tr:hover {
             background-color: #f5f5f5;
             cursor: pointer;
         }
+        .delete-btn {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            display: none;
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        tr:hover .delete-btn {
+            display: block;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2 style="text-align: center;">Calculadora de Fórmula</h2>
-
-        <div class="form-group">
-            <label for="clientName">Nombre del Cliente:</label>
-            <input type="text" id="clientName" placeholder="Ingrese el nombre del cliente">
+    <div class="main-container">
+        <div class="historial-container">
+            <h3>Historial:</h3>
+            <table id="historialTable">
+                <thead>
+                    <tr>
+                        <th>Nombre del Cliente</th>
+                        <th>Número de OP</th>
+                        <th>Fecha y Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Las filas se añadirán aquí -->
+                </tbody>
+            </table>
         </div>
 
-        <div class="form-group">
-            <label for="opNumber">Número de OP:</label>
-            <input type="text" id="opNumber" placeholder="Ingrese el número de OP">
+        <div class="form-container">
+            <h2 style="text-align: center;">Calculadora de Fórmula</h2>
+
+            <div class="form-group">
+                <label for="clientName">Nombre del Cliente:</label>
+                <input type="text" id="clientName" placeholder="Ingrese el nombre del cliente">
+            </div>
+
+            <div class="form-group">
+                <label for="opNumber">Número de OP:</label>
+                <input type="text" id="opNumber" placeholder="Ingrese el número de OP">
+            </div>
+
+            <div class="form-group">
+                <label for="inputValue">Valor de entrada:</label>
+                <input type="number" id="inputValue" step="any" placeholder="Ingrese un valor" value="96">
+            </div>
+
+            <div class="form-group">
+                <label for="calibre">Seleccione un calibre:</label>
+                <select id="calibre">
+                    <option value="9.9">0.67</option>
+                    <option value="59.9">0.45</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="repeticionesAvance">#Repeticiones Avance:</label>
+                <input type="number" id="repeticionesAvance" step="any" placeholder="Ingrese el valor de repeticiones" value="1">
+            </div>
+
+            <div class="form-group">
+                <label for="sacarGap">Sacar Gap al Avance:</label>
+                <input type="number" id="sacarGap" step="any" placeholder="Ingrese el valor de sacar gap" value="0">
+            </div>
+
+            <button onclick="calcular()">Calcular</button>
+            <button onclick="exportarAExcel()">Exportar a Excel</button>
         </div>
 
-        <div class="form-group">
-            <label for="inputValue">Valor de entrada:</label>
-            <input type="number" id="inputValue" step="any" placeholder="Ingrese un valor" value="96">
-        </div>
-
-        <div class="form-group">
-            <label for="calibre">Seleccione un calibre:</label>
-            <select id="calibre">
-                <option value="9.9">0.67</option>
-                <option value="59.9">0.45</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="repeticionesAvance">#Repeticiones Avance:</label>
-            <input type="number" id="repeticionesAvance" step="any" placeholder="Ingrese el valor de repeticiones" value="1">
-        </div>
-
-        <div class="form-group">
-            <label for="sacarGap">Sacar Gap al Avance:</label>
-            <input type="number" id="sacarGap" step="any" placeholder="Ingrese el valor de sacar gap" value="0">
-        </div>
-
-        <button onclick="calcular()">Calcular</button>
-        <button onclick="exportarAExcel()">Exportar a Excel</button>
-
-        <div class="results">
+        <div class="results-container">
             <h3>Resultados:</h3>
-            <p id="clientInfo"></p>
-            <p id="resultado1"></p>
-            <p id="resultado2"></p>
-            <p id="resultado3"></p>
-            <p id="resultado4"></p>
-            <p id="resultado5"></p>
-            <p id="resultado6"></p>
+            <div class="results">
+                <p id="clientInfo"></p>
+                <p id="resultado1"></p>
+                <p id="resultado2"></p>
+                <p id="resultado3"></p>
+                <p id="resultado4"></p>
+                <p id="resultado5"></p>
+                <p id="resultado6"></p>
+            </div>
         </div>
-
-        <h3>Historial:</h3>
-        <table id="historialTable">
-            <thead>
-                <tr>
-                    <th>Nombre del Cliente</th>
-                    <th>Número de OP</th>
-                    <th>Fecha y Hora</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Las filas se añadirán aquí -->
-            </tbody>
-        </table>
     </div>
 
     <script>
         var historial = [];
 
+        document.getElementById('sacarGap').addEventListener('input', function() {
+            if (this.value > 0) {
+                document.getElementById('repeticionesAvance').value = 2;
+            }
+        });
+
         function calcular() {
-            // Obtener los valores de entrada
             var clientName = document.getElementById("clientName").value;
             var opNumber = document.getElementById("opNumber").value;
             var inputValue = parseFloat(document.getElementById("inputValue").value);
@@ -153,7 +193,6 @@
             var repeticionesAvanceValue = parseFloat(document.getElementById("repeticionesAvance").value);
             var sacarGapValue = parseFloat(document.getElementById("sacarGap").value);
 
-            // Calcular los resultados
             var unidadMm = inputValue * 3.175;
             var unidadCm = unidadMm / 10;
             var enlongacion = 99 / unidadCm - 100;
@@ -161,7 +200,6 @@
             var medidaRepeticionAvance = unidadMm / repeticionesAvanceValue;
             var sacarGapAlAvance = medidaRepeticionAvance - sacarGapValue;
 
-            // Guardar los resultados en el historial
             var operacion = {
                 clientName: clientName,
                 opNumber: opNumber,
@@ -175,17 +213,12 @@
                 }
             };
 
-            // Solo guardar sacarGapAlAvance si es mayor que 1
             if (sacarGapAlAvance > 1) {
                 operacion.resultados.sacarGapAlAvance = sacarGapAlAvance.toFixed(2);
             }
 
             historial.push(operacion);
-
-            // Actualizar la tabla de historial
             actualizarHistorial();
-
-            // Mostrar los resultados
             mostrarResultados(operacion);
         }
 
@@ -193,10 +226,13 @@
             var table = document.getElementById("historialTable").getElementsByTagName('tbody')[0];
             table.innerHTML = '';
 
-            historial.forEach(function(operacion) {
+            historial.forEach(function(operacion, index) {
                 var newRow = table.insertRow();
-                newRow.onclick = function() {
-                    mostrarResultados(operacion);
+                newRow.style.position = 'relative';
+                newRow.onclick = function(event) {
+                    if (event.target.className !== 'delete-btn') {
+                        mostrarResultados(operacion);
+                    }
                 };
 
                 var cell1 = newRow.insertCell(0);
@@ -206,7 +242,21 @@
                 cell1.innerHTML = operacion.clientName;
                 cell2.innerHTML = operacion.opNumber;
                 cell3.innerHTML = operacion.fechaHora;
+
+                var deleteButton = document.createElement('button');
+                deleteButton.className = 'delete-btn';
+                deleteButton.innerHTML = 'X';
+                deleteButton.onclick = function(event) {
+                    eliminarHistorial(index, event);
+                };
+                newRow.appendChild(deleteButton);
             });
+        }
+
+        function eliminarHistorial(index, event) {
+            event.stopPropagation();
+            historial.splice(index, 1);
+            actualizarHistorial();
         }
 
         function mostrarResultados(operacion) {
@@ -225,7 +275,6 @@
             document.getElementById("resultado5").innerHTML =
                 "Medida de repetición al Avance: <strong>" + operacion.resultados.medidaRepeticionAvance + "</strong>";
 
-            // Mostrar Sacar Gap al Avance solo si es mayor que 1
             if (operacion.resultados.sacarGapAlAvance) {
                 document.getElementById("resultado6").innerHTML =
                     "Medida Gap al Avance: <strong>" + operacion.resultados.sacarGapAlAvance + "</strong>";
@@ -248,7 +297,6 @@
                     "Medida de repetición al Avance": operacion.resultados.medidaRepeticionAvance
                 };
 
-                // Solo incluir Sacar Gap al Avance si es mayor que 1
                 if (operacion.resultados.sacarGapAlAvance) {
                     row["Sacar Gap al Avance"] = operacion.resultados.sacarGapAlAvance;
                 }
