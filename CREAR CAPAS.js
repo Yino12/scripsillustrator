@@ -6,7 +6,7 @@ if (app.documents.length > 0) {
     layerDialog.alignChildren = "left";
 
     // Lista de nombres de capas en orden invertido
-    var layerNames = ["A", "GUIAS", "MONTAJE", "TROQUEL", "PM", "ORIGINAL", "COTAS Y ROTULO", "BLANCO", "SIMULACIÓN DE BLANCO" , "ARTE", "MATERIAL"];
+    var layerNames = ["A", "GUIAS", "MONTAJE", "TROQUEL", "PM", "ORIGINAL", "COTAS Y ROTULO", "BLANCO", "SIMULACIÓN DE BLANCO" , "ARTE", "MATERIAL", "PM-B"];
 
     // Crear un checkbox para cada capa
     var checkboxes = [];
