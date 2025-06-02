@@ -334,6 +334,7 @@
                     <tr>
                         <th>Nombre del Cliente</th>
                         <th>Número de OP</th>
+                        <th>Colores</th>
                         <th>Fecha y Hora</th>
                     </tr>
                 </thead>
@@ -673,10 +674,12 @@
                 var cell1 = newRow.insertCell(0);
                 var cell2 = newRow.insertCell(1);
                 var cell3 = newRow.insertCell(2);
+                var cell4 = newRow.insertCell(3);
 
                 cell1.innerHTML = operacion.clientName;
                 cell2.innerHTML = operacion.opNumber;
-                cell3.innerHTML = operacion.fechaHora;
+                cell3.innerHTML = operacion.cantidadColores;
+                cell4.innerHTML = operacion.fechaHora;
 
                 var deleteButton = document.createElement('button');
                 deleteButton.className = 'delete-btn';
@@ -725,8 +728,8 @@
                 var row = {
                     "Nombre del Cliente": operacion.clientName,
                     "Número de OP": operacion.opNumber,
-                    "Fecha y Hora": operacion.fechaHora,
                     "Cantidad de Colores": operacion.cantidadColores,
+                    "Fecha y Hora": operacion.fechaHora,
                     "Unidad-mm": operacion.resultados.unidadMm,
                     "Unidad-cm": operacion.resultados.unidadCm,
                     "Enlongación": operacion.resultados.enlongacion,
