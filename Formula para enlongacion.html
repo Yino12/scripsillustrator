@@ -12,107 +12,119 @@
             padding: 20px;
             display: flex;
             justify-content: center;
-            background-color: #212121;
-            color: #E0E0E0;
+            background-color: #f0f0f0;
             font-size: 18px;
         }
+
         .main-container {
             display: flex;
             width: 100%;
             gap: 20px;
         }
+
         .historial-container {
             flex: 2;
         }
+
         .form-container {
             flex: 1;
         }
+
         .results-container {
             flex: 1;
         }
+
         .historial-container, .form-container, .results-container {
             padding: 20px;
-            border: 1px solid #424242;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            background-color: #2E2E2E;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         .form-group {
             display: flex;
             flex-direction: column;
             margin-bottom: 15px;
         }
+
         label {
             margin-bottom: 5px;
             font-weight: bold;
         }
+
         input, select, button {
             padding: 10px;
-            border: 1px solid #424242;
+            border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 18px;
-            background-color: #3E3E3E;
-            color: #E0E0E0;
         }
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: inner-spin-button;
-            height: 20px;
-            width: 20px;
-        }
+
         button {
-            background-color: #009688;
+            background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
             font-size: 18px;
             margin-top: 10px;
         }
+
         button:hover {
-            background-color: #00796B;
+            background-color: #45a049;
         }
+
         .results table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
+
         .results th, .results td {
-            border: 1px solid #424242;
+            border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
             font-size: 18px;
         }
+
         .results th {
-            background-color: #3E3E3E;
+            background-color: #f2f2f2;
         }
+
         .results td:last-child {
             text-align: right;
             font-weight: bold;
         }
+
         .results tr:nth-child(even) {
-            background-color: #3E3E3E;
+            background-color: #f2f2f2;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
+
         th, td {
-            border: 1px solid #424242;
+            border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
             font-size: 18px;
         }
+
         th {
-            background-color: #3E3E3E;
+            background-color: #f2f2f2;
         }
+
         tr {
             position: relative;
         }
+
         tr:hover {
-            background-color: #4A4A4A;
+            background-color: #f5f5f5;
             cursor: pointer;
         }
+
         .delete-btn {
             background-color: #ff4444;
             color: white;
@@ -128,9 +140,11 @@
             top: 50%;
             transform: translateY(-50%);
         }
+
         tr:hover .delete-btn {
             display: block;
         }
+
         @keyframes popUp {
             0% {
                 transform: scale(1);
@@ -142,15 +156,18 @@
                 transform: scale(1);
             }
         }
+
         .pop-up {
             animation: popUp 0.5s;
         }
+
         .color-box-container {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-top: 10px;
         }
+
         .color-box {
             width: 40px;
             height: 40px;
@@ -166,11 +183,13 @@
             white-space: pre;
             text-align: center;
         }
+
         .color-box-result {
             width: 35px;
             height: 35px;
             margin: 1px;
         }
+
         .modal {
             display: none;
             position: fixed;
@@ -181,35 +200,119 @@
             height: 100%;
             background-color: rgba(0,0,0,0.4);
         }
+
         .modal-content {
-            background-color: #2E2E2E;
+            background-color: #fefefe;
             margin: auto;
             padding: 20px;
-            border: 1px solid #424242;
+            border: 1px solid #888;
             width: 50%;
             max-height: 80%;
             overflow: hidden;
-            color: #E0E0E0;
         }
+
         .close {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
         }
-        .close:hover,
-        .close:focus {
-            color: #E0E0E0;
+
+        .close:hover, .close:focus {
+            color: black;
             text-decoration: none;
             cursor: pointer;
         }
+
         .slider-container {
             display: flex;
             align-items: center;
             gap: 10px;
         }
+
         .slider-container input[type="number"] {
             width: 60px;
+        }
+
+        .color-slider {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .color-slider .slider-label {
+            width: 30px;
+            margin-right: 10px;
+        }
+
+        .color-slider .slider-value {
+            width: 50px;
+            margin-left: 10px;
+            text-align: right;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        #cian-gradient {
+            background: linear-gradient(to right, white, #00FFFF);
+        }
+
+        #magenta-gradient {
+            background: linear-gradient(to right, white, #FF00FF);
+        }
+
+        #amarillo-gradient {
+            background: linear-gradient(to right, white, #FFFF00);
+        }
+
+        #negro-gradient {
+            background: linear-gradient(to right, white, #000000);
+        }
+
+        #cian-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00FFFF;
+            cursor: pointer;
+        }
+
+        #magenta-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #FF00FF;
+            cursor: pointer;
+        }
+
+        #amarillo-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #FFFF00;
+            cursor: pointer;
+        }
+
+        #negro-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #000000;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -233,22 +336,18 @@
 
         <div class="form-container">
             <h2 style="text-align: center;">Calculadora de Fórmula</h2>
-
             <div class="form-group">
                 <label for="clientName">Nombre del Cliente:</label>
                 <input type="text" id="clientName" placeholder="Ingrese el nombre del cliente">
             </div>
-
             <div class="form-group">
                 <label for="opNumber">Número de OP:</label>
                 <input type="text" id="opNumber" placeholder="Ingrese el número de OP">
             </div>
-
             <div class="form-group">
                 <label for="inputValue">Valor de entrada:</label>
                 <input type="number" id="inputValue" step="any" placeholder="Ingrese un valor" value="96">
             </div>
-
             <div class="form-group">
                 <label for="calibre">Seleccione un calibre:</label>
                 <select id="calibre">
@@ -256,17 +355,14 @@
                     <option value="59.9">0.45</option>
                 </select>
             </div>
-
             <div class="form-group">
                 <label for="repeticionesAvance">#Repeticiones Avance:</label>
                 <input type="number" id="repeticionesAvance" step="any" placeholder="Ingrese el valor de repeticiones" value="1">
             </div>
-
             <div class="form-group">
                 <label for="sacarGap">Sacar Gap al Avance:</label>
                 <input type="number" id="sacarGap" step="any" placeholder="Ingrese el valor de sacar gap" value="0">
             </div>
-
             <div class="form-group">
                 <label for="cantidadColores">Cantidad de Colores:</label>
                 <select id="cantidadColores" onchange="mostrarColores()">
@@ -280,13 +376,11 @@
                     <option value="8">8</option>
                 </select>
             </div>
-
             <div id="coloresContainer" class="form-group">
                 <div class="color-box-container" id="colorBoxes">
                     <!-- Los cuadros de colores se añadirán aquí -->
                 </div>
             </div>
-
             <button onclick="calcular()">Calcular</button>
             <button onclick="exportarAExcel()">Exportar a Excel</button>
         </div>
@@ -342,33 +436,29 @@
         <div class="modal-content">
             <span class="close" onclick="cerrarModal()">&times;</span>
             <h2>Seleccionar Color</h2>
-            <div class="form-group">
-                <label for="cian">Cian (%):</label>
-                <div class="slider-container">
-                    <input type="range" id="cian" min="0" max="100" value="0" step="0.01" oninput="actualizarValor('cian'), actualizarColor()">
-                    <input type="number" id="cianInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('cian'), actualizarColor()">
-                </div>
+            <div class="color-slider" id="cian-gradient">
+                <span class="slider-label">C:</span>
+                <input type="range" id="cian-slider" min="0" max="100" value="0" class="slider" oninput="actualizarValor('cian'), actualizarColor()">
+                <input type="number" id="cianInput" min="0" max="100" step="1" value="0" onchange="actualizarSlider('cian'), actualizarColor()">
+                <span class="slider-value"><span id="cian-value">0</span>%</span>
             </div>
-            <div class="form-group">
-                <label for="magenta">Magenta (%):</label>
-                <div class="slider-container">
-                    <input type="range" id="magenta" min="0" max="100" value="0" step="0.01" oninput="actualizarValor('magenta'), actualizarColor()">
-                    <input type="number" id="magentaInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('magenta'), actualizarColor()">
-                </div>
+            <div class="color-slider" id="magenta-gradient">
+                <span class="slider-label">M:</span>
+                <input type="range" id="magenta-slider" min="0" max="100" value="0" class="slider" oninput="actualizarValor('magenta'), actualizarColor()">
+                <input type="number" id="magentaInput" min="0" max="100" step="1" value="0" onchange="actualizarSlider('magenta'), actualizarColor()">
+                <span class="slider-value"><span id="magenta-value">0</span>%</span>
             </div>
-            <div class="form-group">
-                <label for="amarillo">Amarillo (%):</label>
-                <div class="slider-container">
-                    <input type="range" id="amarillo" min="0" max="100" value="0" step="0.01" oninput="actualizarValor('amarillo'), actualizarColor()">
-                    <input type="number" id="amarilloInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('amarillo'), actualizarColor()">
-                </div>
+            <div class="color-slider" id="amarillo-gradient">
+                <span class="slider-label">Y:</span>
+                <input type="range" id="amarillo-slider" min="0" max="100" value="0" class="slider" oninput="actualizarValor('amarillo'), actualizarColor()">
+                <input type="number" id="amarilloInput" min="0" max="100" step="1" value="0" onchange="actualizarSlider('amarillo'), actualizarColor()">
+                <span class="slider-value"><span id="amarillo-value">0</span>%</span>
             </div>
-            <div class="form-group">
-                <label for="negro">Negro (%):</label>
-                <div class="slider-container">
-                    <input type="range" id="negro" min="0" max="100" value="0" step="0.01" oninput="actualizarValor('negro'), actualizarColor()">
-                    <input type="number" id="negroInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('negro'), actualizarColor()">
-                </div>
+            <div class="color-slider" id="negro-gradient">
+                <span class="slider-label">K:</span>
+                <input type="range" id="negro-slider" min="0" max="100" value="0" class="slider" oninput="actualizarValor('negro'), actualizarColor()">
+                <input type="number" id="negroInput" min="0" max="100" step="1" value="0" onchange="actualizarSlider('negro'), actualizarColor()">
+                <span class="slider-value"><span id="negro-value">0</span>%</span>
             </div>
             <div id="colorPreview" style="width: 100px; height: 100px; border: 1px solid #000; margin: 10px auto;"></div>
             <button onclick="guardarColor()">Guardar Color</button>
@@ -386,14 +476,15 @@
             }
         });
 
-        function actualizarValor(elementId) {
-            var sliderValue = document.getElementById(elementId).value;
-            document.getElementById(elementId + 'Input').value = sliderValue;
+        function actualizarValor(color) {
+            var sliderValue = document.getElementById(color + "-slider").value;
+            document.getElementById(color + "Input").value = sliderValue;
+            document.getElementById(color + "-value").textContent = sliderValue;
         }
 
-        function actualizarSlider(elementId) {
-            var inputValue = document.getElementById(elementId + 'Input').value;
-            document.getElementById(elementId).value = inputValue;
+        function actualizarSlider(color) {
+            var inputValue = document.getElementById(color + "Input").value;
+            document.getElementById(color + "-slider").value = inputValue;
         }
 
         function mostrarColores() {
@@ -443,14 +534,18 @@
             var amarilloValue = colorText[2] ? parseFloat(colorText[2]) : 0;
             var negroValue = colorText[3] ? parseFloat(colorText[3]) : 0;
 
-            document.getElementById("cian").value = cianValue;
+            document.getElementById("cian-slider").value = cianValue;
             document.getElementById("cianInput").value = cianValue;
-            document.getElementById("magenta").value = magentaValue;
+            document.getElementById("cian-value").textContent = cianValue;
+            document.getElementById("magenta-slider").value = magentaValue;
             document.getElementById("magentaInput").value = magentaValue;
-            document.getElementById("amarillo").value = amarilloValue;
+            document.getElementById("magenta-value").textContent = magentaValue;
+            document.getElementById("amarillo-slider").value = amarilloValue;
             document.getElementById("amarilloInput").value = amarilloValue;
-            document.getElementById("negro").value = negroValue;
+            document.getElementById("amarillo-value").textContent = amarilloValue;
+            document.getElementById("negro-slider").value = negroValue;
             document.getElementById("negroInput").value = negroValue;
+            document.getElementById("negro-value").textContent = negroValue;
 
             var modal = document.getElementById("colorModal");
             modal.style.display = "block";
@@ -463,27 +558,36 @@
         }
 
         function actualizarColor() {
-            var cian = parseFloat(document.getElementById("cian").value);
-            var magenta = parseFloat(document.getElementById("magenta").value);
-            var amarillo = parseFloat(document.getElementById("amarillo").value);
-            var negro = parseFloat(document.getElementById("negro").value);
+            var cian = parseFloat(document.getElementById("cian-slider").value);
+            var magenta = parseFloat(document.getElementById("magenta-slider").value);
+            var amarillo = parseFloat(document.getElementById("amarillo-slider").value);
+            var negro = parseFloat(document.getElementById("negro-slider").value);
 
             var colorPreview = document.getElementById("colorPreview");
-            colorPreview.style.backgroundColor = `rgb(${255 - (cian * 2.55)}, ${255 - (magenta * 2.55)}, ${255 - (amarillo * 2.55)})`;
+            colorPreview.style.backgroundColor = `rgb(
+                ${Math.round(255 * (1 - cian / 100) * (1 - negro / 100))},
+                ${Math.round(255 * (1 - magenta / 100) * (1 - negro / 100))},
+                ${Math.round(255 * (1 - amarillo / 100) * (1 - negro / 100))}
+            )`;
         }
 
         function guardarColor() {
-            var cian = parseFloat(document.getElementById("cian").value);
-            var magenta = parseFloat(document.getElementById("magenta").value);
-            var amarillo = parseFloat(document.getElementById("amarillo").value);
-            var negro = parseFloat(document.getElementById("negro").value);
+            var cian = parseFloat(document.getElementById("cian-slider").value);
+            var magenta = parseFloat(document.getElementById("magenta-slider").value);
+            var amarillo = parseFloat(document.getElementById("amarillo-slider").value);
+            var negro = parseFloat(document.getElementById("negro-slider").value);
 
-            var color = `rgb(${255 - (cian * 2.55)}, ${255 - (magenta * 2.55)}, ${255 - (amarillo * 2.55)})`;
+            var color = `rgb(
+                ${Math.round(255 * (1 - cian / 100) * (1 - negro / 100))},
+                ${Math.round(255 * (1 - magenta / 100) * (1 - negro / 100))},
+                ${Math.round(255 * (1 - amarillo / 100) * (1 - negro / 100))}
+            )`;
+
             colores[colorActualIndex] = color;
 
             var colorBoxes = document.getElementsByClassName("color-box");
             colorBoxes[colorActualIndex].style.backgroundColor = color;
-            colorBoxes[colorActualIndex].textContent = `${cian.toFixed(2)}% C\n${magenta.toFixed(2)}% M\n${amarillo.toFixed(2)}% Y\n${negro.toFixed(2)}% K`;
+            colorBoxes[colorActualIndex].textContent = `${cian.toFixed(0)}% C\n${magenta.toFixed(0)}% M\n${amarillo.toFixed(0)}% Y\n${negro.toFixed(0)}% K`;
 
             cerrarModal();
         }
