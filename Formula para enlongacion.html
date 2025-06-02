@@ -12,7 +12,8 @@
             padding: 20px;
             display: flex;
             justify-content: center;
-            background-color: #f0f0f0;
+            background-color: #212121;
+            color: #E0E0E0;
             font-size: 18px;
         }
         .main-container {
@@ -20,13 +21,21 @@
             width: 100%;
             gap: 20px;
         }
-        .historial-container, .form-container, .results-container {
+        .historial-container {
+            flex: 2;
+        }
+        .form-container {
             flex: 1;
+        }
+        .results-container {
+            flex: 1;
+        }
+        .historial-container, .form-container, .results-container {
             padding: 20px;
-            border: 1px solid #ccc;
+            border: 1px solid #424242;
             border-radius: 5px;
-            background-color: #f9f9f9;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #2E2E2E;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
         .form-group {
             display: flex;
@@ -39,9 +48,11 @@
         }
         input, select, button {
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #424242;
             border-radius: 4px;
             font-size: 18px;
+            background-color: #3E3E3E;
+            color: #E0E0E0;
         }
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button {
@@ -50,7 +61,7 @@
             width: 20px;
         }
         button {
-            background-color: #4CAF50;
+            background-color: #009688;
             color: white;
             border: none;
             cursor: pointer;
@@ -58,10 +69,28 @@
             margin-top: 10px;
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #00796B;
         }
-        .results p {
-            margin: 10px 0;
+        .results table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .results th, .results td {
+            border: 1px solid #424242;
+            padding: 8px;
+            text-align: left;
+            font-size: 18px;
+        }
+        .results th {
+            background-color: #3E3E3E;
+        }
+        .results td:last-child {
+            text-align: right;
+            font-weight: bold;
+        }
+        .results tr:nth-child(even) {
+            background-color: #3E3E3E;
         }
         table {
             width: 100%;
@@ -69,19 +98,19 @@
             margin-top: 20px;
         }
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #424242;
             padding: 8px;
             text-align: left;
             font-size: 18px;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #3E3E3E;
         }
         tr {
             position: relative;
         }
         tr:hover {
-            background-color: #f5f5f5;
+            background-color: #4A4A4A;
             cursor: pointer;
         }
         .delete-btn {
@@ -101,6 +130,86 @@
         }
         tr:hover .delete-btn {
             display: block;
+        }
+        @keyframes popUp {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .pop-up {
+            animation: popUp 0.5s;
+        }
+        .color-box-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .color-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid #000;
+            color: white;
+            font-size: 8px;
+            text-shadow: 1px 1px 1px black;
+            white-space: pre;
+            text-align: center;
+        }
+        .color-box-result {
+            width: 35px;
+            height: 35px;
+            margin: 1px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #2E2E2E;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #424242;
+            width: 50%;
+            max-height: 80%;
+            overflow: hidden;
+            color: #E0E0E0;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: #E0E0E0;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .slider-container input[type="number"] {
+            width: 60px;
         }
     </style>
 </head>
@@ -158,6 +267,26 @@
                 <input type="number" id="sacarGap" step="any" placeholder="Ingrese el valor de sacar gap" value="0">
             </div>
 
+            <div class="form-group">
+                <label for="cantidadColores">Cantidad de Colores:</label>
+                <select id="cantidadColores" onchange="mostrarColores()">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4" selected>4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+            </div>
+
+            <div id="coloresContainer" class="form-group">
+                <div class="color-box-container" id="colorBoxes">
+                    <!-- Los cuadros de colores se añadirán aquí -->
+                </div>
+            </div>
+
             <button onclick="calcular()">Calcular</button>
             <button onclick="exportarAExcel()">Exportar a Excel</button>
         </div>
@@ -165,25 +294,199 @@
         <div class="results-container">
             <h3>Resultados:</h3>
             <div class="results">
-                <p id="clientInfo"></p>
-                <p id="resultado1"></p>
-                <p id="resultado2"></p>
-                <p id="resultado3"></p>
-                <p id="resultado4"></p>
-                <p id="resultado5"></p>
-                <p id="resultado6"></p>
+                <table>
+                    <tr>
+                        <td>Cliente:</td>
+                        <td id="clientInfo" class="pop-up"></td>
+                    </tr>
+                    <tr>
+                        <td>Número de OP:</td>
+                        <td id="opInfo" class="pop-up"></td>
+                    </tr>
+                    <tr>
+                        <td>Unidad-mm:</td>
+                        <td id="resultado1" class="pop-up"></td>
+                    </tr>
+                    <tr>
+                        <td>Unidad-cm:</td>
+                        <td id="resultado2" class="pop-up"></td>
+                    </tr>
+                    <tr>
+                        <td>Enlongación:</td>
+                        <td id="resultado3" class="pop-up"></td>
+                    </tr>
+                    <tr>
+                        <td>Enlongación API:</td>
+                        <td id="resultado4" class="pop-up"></td>
+                    </tr>
+                    <tr>
+                        <td>Medida de repetición al Avance:</td>
+                        <td id="resultado5" class="pop-up"></td>
+                    </tr>
+                    <tr>
+                        <td>Medida Gap al Avance:</td>
+                        <td id="resultado6" class="pop-up"></td>
+                    </tr>
+                    <tr>
+                        <td>Colores:</td>
+                        <td id="coloresResult" class="pop-up">
+                            <div class="color-box-container" id="colorBoxesResult"></div>
+                        </td>
+                    </tr>
+                </table>
             </div>
+        </div>
+    </div>
+
+    <div id="colorModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+            <h2>Seleccionar Color</h2>
+            <div class="form-group">
+                <label for="cian">Cian (%):</label>
+                <div class="slider-container">
+                    <input type="range" id="cian" min="0" max="100" value="0" step="0.01" oninput="actualizarValor('cian'), actualizarColor()">
+                    <input type="number" id="cianInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('cian'), actualizarColor()">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="magenta">Magenta (%):</label>
+                <div class="slider-container">
+                    <input type="range" id="magenta" min="0" max="100" value="0" step="0.01" oninput="actualizarValor('magenta'), actualizarColor()">
+                    <input type="number" id="magentaInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('magenta'), actualizarColor()">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="amarillo">Amarillo (%):</label>
+                <div class="slider-container">
+                    <input type="range" id="amarillo" min="0" max="100" value="0" step="0.01" oninput="actualizarValor('amarillo'), actualizarColor()">
+                    <input type="number" id="amarilloInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('amarillo'), actualizarColor()">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="negro">Negro (%):</label>
+                <div class="slider-container">
+                    <input type="range" id="negro" min="0" max="100" value="0" step="0.01" oninput="actualizarValor('negro'), actualizarColor()">
+                    <input type="number" id="negroInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('negro'), actualizarColor()">
+                </div>
+            </div>
+            <div id="colorPreview" style="width: 100px; height: 100px; border: 1px solid #000; margin: 10px auto;"></div>
+            <button onclick="guardarColor()">Guardar Color</button>
         </div>
     </div>
 
     <script>
         var historial = [];
+        var colores = [];
+        var colorActualIndex = null;
 
         document.getElementById('sacarGap').addEventListener('input', function() {
             if (this.value > 0) {
                 document.getElementById('repeticionesAvance').value = 2;
             }
         });
+
+        function actualizarValor(elementId) {
+            var sliderValue = document.getElementById(elementId).value;
+            document.getElementById(elementId + 'Input').value = sliderValue;
+        }
+
+        function actualizarSlider(elementId) {
+            var inputValue = document.getElementById(elementId + 'Input').value;
+            document.getElementById(elementId).value = inputValue;
+        }
+
+        function mostrarColores() {
+            var cantidad = parseInt(document.getElementById("cantidadColores").value);
+            var container = document.getElementById("colorBoxes");
+            container.innerHTML = '';
+
+            colores = [];
+            for (var i = 0; i < cantidad; i++) {
+                var colorBox = document.createElement("div");
+                colorBox.className = "color-box";
+                colorBox.style.backgroundColor = getColorPorDefecto(i);
+                colorBox.textContent = getColorTextPorDefecto(i);
+                colorBox.onclick = (function(index) {
+                    return function() {
+                        abrirModalColor(index);
+                    };
+                })(i);
+                container.appendChild(colorBox);
+                colores.push(getColorPorDefecto(i));
+            }
+        }
+
+        function getColorPorDefecto(index) {
+            var coloresPorDefecto = [
+                "rgb(0, 255, 255)", "rgb(255, 0, 255)", "rgb(255, 255, 0)", "rgb(0, 0, 0)",
+                "rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(255, 255, 255)"
+            ];
+            return coloresPorDefecto[index];
+        }
+
+        function getColorTextPorDefecto(index) {
+            var coloresTextoPorDefecto = [
+                "100% C\n0% M\n0% Y\n0% K", "0% C\n100% M\n0% Y\n0% K", "0% C\n0% M\n100% Y\n0% K", "0% C\n0% M\n0% Y\n100% K",
+                "0% C\n0% M\n0% Y\n0% K", "0% C\n0% M\n0% Y\n0% K", "0% C\n0% M\n0% Y\n0% K", "0% C\n0% M\n0% Y\n0% K"
+            ];
+            return coloresTextoPorDefecto[index];
+        }
+
+        function abrirModalColor(index) {
+            colorActualIndex = index;
+            var colorBox = document.getElementsByClassName("color-box")[index];
+            var colorText = colorBox.textContent.split('\n');
+
+            var cianValue = colorText[0] ? parseFloat(colorText[0]) : 0;
+            var magentaValue = colorText[1] ? parseFloat(colorText[1]) : 0;
+            var amarilloValue = colorText[2] ? parseFloat(colorText[2]) : 0;
+            var negroValue = colorText[3] ? parseFloat(colorText[3]) : 0;
+
+            document.getElementById("cian").value = cianValue;
+            document.getElementById("cianInput").value = cianValue;
+            document.getElementById("magenta").value = magentaValue;
+            document.getElementById("magentaInput").value = magentaValue;
+            document.getElementById("amarillo").value = amarilloValue;
+            document.getElementById("amarilloInput").value = amarilloValue;
+            document.getElementById("negro").value = negroValue;
+            document.getElementById("negroInput").value = negroValue;
+
+            var modal = document.getElementById("colorModal");
+            modal.style.display = "block";
+            actualizarColor();
+        }
+
+        function cerrarModal() {
+            var modal = document.getElementById("colorModal");
+            modal.style.display = "none";
+        }
+
+        function actualizarColor() {
+            var cian = parseFloat(document.getElementById("cian").value);
+            var magenta = parseFloat(document.getElementById("magenta").value);
+            var amarillo = parseFloat(document.getElementById("amarillo").value);
+            var negro = parseFloat(document.getElementById("negro").value);
+
+            var colorPreview = document.getElementById("colorPreview");
+            colorPreview.style.backgroundColor = `rgb(${255 - (cian * 2.55)}, ${255 - (magenta * 2.55)}, ${255 - (amarillo * 2.55)})`;
+        }
+
+        function guardarColor() {
+            var cian = parseFloat(document.getElementById("cian").value);
+            var magenta = parseFloat(document.getElementById("magenta").value);
+            var amarillo = parseFloat(document.getElementById("amarillo").value);
+            var negro = parseFloat(document.getElementById("negro").value);
+
+            var color = `rgb(${255 - (cian * 2.55)}, ${255 - (magenta * 2.55)}, ${255 - (amarillo * 2.55)})`;
+            colores[colorActualIndex] = color;
+
+            var colorBoxes = document.getElementsByClassName("color-box");
+            colorBoxes[colorActualIndex].style.backgroundColor = color;
+            colorBoxes[colorActualIndex].textContent = `${cian.toFixed(2)}% C\n${magenta.toFixed(2)}% M\n${amarillo.toFixed(2)}% Y\n${negro.toFixed(2)}% K`;
+
+            cerrarModal();
+        }
 
         function calcular() {
             var clientName = document.getElementById("clientName").value;
@@ -192,6 +495,7 @@
             var calibreValue = parseFloat(document.getElementById("calibre").value);
             var repeticionesAvanceValue = parseFloat(document.getElementById("repeticionesAvance").value);
             var sacarGapValue = parseFloat(document.getElementById("sacarGap").value);
+            var cantidadColores = document.getElementById("cantidadColores").value;
 
             var unidadMm = inputValue * 3.175;
             var unidadCm = unidadMm / 10;
@@ -204,6 +508,8 @@
                 clientName: clientName,
                 opNumber: opNumber,
                 fechaHora: new Date().toLocaleString(),
+                cantidadColores: cantidadColores,
+                colores: colores,
                 resultados: {
                     unidadMm: unidadMm.toFixed(2),
                     unidadCm: unidadCm.toFixed(2),
@@ -260,24 +566,25 @@
         }
 
         function mostrarResultados(operacion) {
-            document.getElementById("clientInfo").innerHTML =
-                "<strong>Cliente:</strong> " + operacion.clientName +
-                "<br><strong>Número de OP:</strong> " + operacion.opNumber;
+            document.getElementById("clientInfo").innerHTML = operacion.clientName;
+            document.getElementById("opInfo").innerHTML = operacion.opNumber;
+            document.getElementById("resultado1").innerHTML = operacion.resultados.unidadMm + " mm";
+            document.getElementById("resultado2").innerHTML = operacion.resultados.unidadCm + " cm";
+            document.getElementById("resultado3").innerHTML = operacion.resultados.enlongacion;
+            document.getElementById("resultado4").innerHTML = operacion.resultados.enlongacionApi + " mm";
+            document.getElementById("resultado5").innerHTML = operacion.resultados.medidaRepeticionAvance + " mm";
 
-            document.getElementById("resultado1").innerHTML =
-                "Unidad-mm: <strong>" + operacion.resultados.unidadMm + " mm</strong>";
-            document.getElementById("resultado2").innerHTML =
-                "Unidad-cm: <strong>" + operacion.resultados.unidadCm + " cm</strong>";
-            document.getElementById("resultado3").innerHTML =
-                "Enlongación: <strong>" + operacion.resultados.enlongacion + "% </strong>";
-            document.getElementById("resultado4").innerHTML =
-                "Enlongación API: <strong>" + operacion.resultados.enlongacionApi + " mm</strong>";
-            document.getElementById("resultado5").innerHTML =
-                "Medida de repetición al Avance: <strong>" + operacion.resultados.medidaRepeticionAvance + " mm</strong>";
+            var coloresResultContainer = document.getElementById("colorBoxesResult");
+            coloresResultContainer.innerHTML = '';
+            operacion.colores.forEach(function(color) {
+                var colorBox = document.createElement("div");
+                colorBox.className = "color-box color-box-result";
+                colorBox.style.backgroundColor = color;
+                coloresResultContainer.appendChild(colorBox);
+            });
 
             if (operacion.resultados.sacarGapAlAvance) {
-                document.getElementById("resultado6").innerHTML =
-                    "Medida Gap al Avance: <strong>" + operacion.resultados.sacarGapAlAvance + " mm</strong>";
+                document.getElementById("resultado6").innerHTML = operacion.resultados.sacarGapAlAvance + " mm";
             } else {
                 document.getElementById("resultado6").innerHTML = "";
             }
@@ -290,6 +597,7 @@
                     "Nombre del Cliente": operacion.clientName,
                     "Número de OP": operacion.opNumber,
                     "Fecha y Hora": operacion.fechaHora,
+                    "Cantidad de Colores": operacion.cantidadColores,
                     "Unidad-mm": operacion.resultados.unidadMm,
                     "Unidad-cm": operacion.resultados.unidadCm,
                     "Enlongación": operacion.resultados.enlongacion,
@@ -306,8 +614,19 @@
 
             var ws = XLSX.utils.json_to_sheet(wsData);
             XLSX.utils.book_append_sheet(wb, ws, "Historial");
-            XLSX.writeFile(wb, "Historial_Resultados.xlsx");
+
+            var fechaActual = new Date();
+            var dia = fechaActual.getDate();
+            var mes = fechaActual.toLocaleString('default', { month: 'long' });
+            var anio = fechaActual.getFullYear();
+            var nombreArchivo = `${dia}-${mes}-${anio}_Historial_Resultados.xlsx`;
+
+            XLSX.writeFile(wb, nombreArchivo);
         }
+
+        window.onload = function() {
+            mostrarColores();
+        };
     </script>
 </body>
 </html>
