@@ -12,7 +12,8 @@
             padding: 20px;
             display: flex;
             justify-content: center;
-            background-color: #f0f0f0;
+            background-color: #212121;
+            color: #E0E0E0;
             font-size: 18px;
         }
 
@@ -36,10 +37,10 @@
 
         .historial-container, .form-container, .results-container {
             padding: 20px;
-            border: 1px solid #ccc;
+            border: 1px solid #424242;
             border-radius: 5px;
-            background-color: #f9f9f9;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #2E2E2E;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
         .form-group {
@@ -55,9 +56,11 @@
 
         input, select, button {
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #424242;
             border-radius: 4px;
             font-size: 18px;
+            background-color: #3E3E3E;
+            color: #E0E0E0;
         }
 
         button {
@@ -80,14 +83,14 @@
         }
 
         .results th, .results td {
-            border: 1px solid #ddd;
+            border: 1px solid #424242;
             padding: 8px;
             text-align: left;
             font-size: 18px;
         }
 
         .results th {
-            background-color: #f2f2f2;
+            background-color: #3E3E3E;
         }
 
         .results td:last-child {
@@ -96,7 +99,7 @@
         }
 
         .results tr:nth-child(even) {
-            background-color: #f2f2f2;
+            background-color: #3E3E3E;
         }
 
         table {
@@ -106,14 +109,14 @@
         }
 
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #424242;
             padding: 8px;
             text-align: left;
             font-size: 18px;
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #3E3E3E;
         }
 
         tr {
@@ -121,7 +124,7 @@
         }
 
         tr:hover {
-            background-color: #f5f5f5;
+            background-color: #4A4A4A;
             cursor: pointer;
         }
 
@@ -202,13 +205,14 @@
         }
 
         .modal-content {
-            background-color: #fefefe;
+            background-color: #2E2E2E;
             margin: auto;
             padding: 20px;
-            border: 1px solid #888;
+            border: 1px solid #424242;
             width: 50%;
             max-height: 80%;
             overflow: hidden;
+            color: #E0E0E0;
         }
 
         .close {
@@ -219,7 +223,7 @@
         }
 
         .close:hover, .close:focus {
-            color: black;
+            color: #E0E0E0;
             text-decoration: none;
             cursor: pointer;
         }
@@ -314,9 +318,14 @@
             background: #000000;
             cursor: pointer;
         }
+
+        .slider-label {
+            color: black;
+        }
     </style>
 </head>
 <body>
+    <!-- El resto del código HTML permanece igual -->
     <div class="main-container">
         <div class="historial-container">
             <h3>Historial:</h3>
@@ -438,27 +447,27 @@
             <h2>Seleccionar Color</h2>
             <div class="color-slider" id="cian-gradient">
                 <span class="slider-label">C:</span>
-                <input type="range" id="cian-slider" min="0" max="100" value="0" class="slider" oninput="actualizarValor('cian'), actualizarColor()">
-                <input type="number" id="cianInput" min="0" max="100" step="1" value="0" onchange="actualizarSlider('cian'), actualizarColor()">
-                <span class="slider-value"><span id="cian-value">0</span>%</span>
+                <input type="range" id="cian-slider" min="0" max="100" value="0" step="0.01" class="slider" oninput="actualizarValor('cian')">
+                <input type="number" id="cianInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('cian')">
+                <span class="slider-value"><span id="cian-value">0.00</span>%</span>
             </div>
             <div class="color-slider" id="magenta-gradient">
                 <span class="slider-label">M:</span>
-                <input type="range" id="magenta-slider" min="0" max="100" value="0" class="slider" oninput="actualizarValor('magenta'), actualizarColor()">
-                <input type="number" id="magentaInput" min="0" max="100" step="1" value="0" onchange="actualizarSlider('magenta'), actualizarColor()">
-                <span class="slider-value"><span id="magenta-value">0</span>%</span>
+                <input type="range" id="magenta-slider" min="0" max="100" value="0" step="0.01" class="slider" oninput="actualizarValor('magenta')">
+                <input type="number" id="magentaInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('magenta')">
+                <span class="slider-value"><span id="magenta-value">0.00</span>%</span>
             </div>
             <div class="color-slider" id="amarillo-gradient">
                 <span class="slider-label">Y:</span>
-                <input type="range" id="amarillo-slider" min="0" max="100" value="0" class="slider" oninput="actualizarValor('amarillo'), actualizarColor()">
-                <input type="number" id="amarilloInput" min="0" max="100" step="1" value="0" onchange="actualizarSlider('amarillo'), actualizarColor()">
-                <span class="slider-value"><span id="amarillo-value">0</span>%</span>
+                <input type="range" id="amarillo-slider" min="0" max="100" value="0" step="0.01" class="slider" oninput="actualizarValor('amarillo')">
+                <input type="number" id="amarilloInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('amarillo')">
+                <span class="slider-value"><span id="amarillo-value">0.00</span>%</span>
             </div>
             <div class="color-slider" id="negro-gradient">
                 <span class="slider-label">K:</span>
-                <input type="range" id="negro-slider" min="0" max="100" value="0" class="slider" oninput="actualizarValor('negro'), actualizarColor()">
-                <input type="number" id="negroInput" min="0" max="100" step="1" value="0" onchange="actualizarSlider('negro'), actualizarColor()">
-                <span class="slider-value"><span id="negro-value">0</span>%</span>
+                <input type="range" id="negro-slider" min="0" max="100" value="0" step="0.01" class="slider" oninput="actualizarValor('negro')">
+                <input type="number" id="negroInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('negro')">
+                <span class="slider-value"><span id="negro-value">0.00</span>%</span>
             </div>
             <div id="colorPreview" style="width: 100px; height: 100px; border: 1px solid #000; margin: 10px auto;"></div>
             <button onclick="guardarColor()">Guardar Color</button>
@@ -466,6 +475,7 @@
     </div>
 
     <script>
+        // El código JavaScript permanece igual
         var historial = [];
         var colores = [];
         var colorActualIndex = null;
@@ -479,12 +489,14 @@
         function actualizarValor(color) {
             var sliderValue = document.getElementById(color + "-slider").value;
             document.getElementById(color + "Input").value = sliderValue;
-            document.getElementById(color + "-value").textContent = sliderValue;
+            document.getElementById(color + "-value").textContent = parseFloat(sliderValue).toFixed(2);
+            actualizarColor();
         }
 
         function actualizarSlider(color) {
             var inputValue = document.getElementById(color + "Input").value;
             document.getElementById(color + "-slider").value = inputValue;
+            actualizarColor();
         }
 
         function mostrarColores() {
@@ -518,8 +530,10 @@
 
         function getColorTextPorDefecto(index) {
             var coloresTextoPorDefecto = [
-                "100% C\n0% M\n0% Y\n0% K", "0% C\n100% M\n0% Y\n0% K", "0% C\n0% M\n100% Y\n0% K", "0% C\n0% M\n0% Y\n100% K",
-                "0% C\n0% M\n0% Y\n0% K", "0% C\n0% M\n0% Y\n0% K", "0% C\n0% M\n0% Y\n0% K", "0% C\n0% M\n0% Y\n0% K"
+                "100.00% C\n0.00% M\n0.00% Y\n0.00% K", "0.00% C\n100.00% M\n0.00% Y\n0.00% K",
+                "0.00% C\n0.00% M\n100.00% Y\n0.00% K", "0.00% C\n0.00% M\n0.00% Y\n100.00% K",
+                "0.00% C\n0.00% M\n0.00% Y\n0.00% K", "0.00% C\n0.00% M\n0.00% Y\n0.00% K",
+                "0.00% C\n0.00% M\n0.00% Y\n0.00% K", "0.00% C\n0.00% M\n0.00% Y\n0.00% K"
             ];
             return coloresTextoPorDefecto[index];
         }
@@ -536,16 +550,16 @@
 
             document.getElementById("cian-slider").value = cianValue;
             document.getElementById("cianInput").value = cianValue;
-            document.getElementById("cian-value").textContent = cianValue;
+            document.getElementById("cian-value").textContent = cianValue.toFixed(2);
             document.getElementById("magenta-slider").value = magentaValue;
             document.getElementById("magentaInput").value = magentaValue;
-            document.getElementById("magenta-value").textContent = magentaValue;
+            document.getElementById("magenta-value").textContent = magentaValue.toFixed(2);
             document.getElementById("amarillo-slider").value = amarilloValue;
             document.getElementById("amarilloInput").value = amarilloValue;
-            document.getElementById("amarillo-value").textContent = amarilloValue;
+            document.getElementById("amarillo-value").textContent = amarilloValue.toFixed(2);
             document.getElementById("negro-slider").value = negroValue;
             document.getElementById("negroInput").value = negroValue;
-            document.getElementById("negro-value").textContent = negroValue;
+            document.getElementById("negro-value").textContent = negroValue.toFixed(2);
 
             var modal = document.getElementById("colorModal");
             modal.style.display = "block";
@@ -587,7 +601,7 @@
 
             var colorBoxes = document.getElementsByClassName("color-box");
             colorBoxes[colorActualIndex].style.backgroundColor = color;
-            colorBoxes[colorActualIndex].textContent = `${cian.toFixed(0)}% C\n${magenta.toFixed(0)}% M\n${amarillo.toFixed(0)}% Y\n${negro.toFixed(0)}% K`;
+            colorBoxes[colorActualIndex].textContent = `${cian.toFixed(2)}% C\n${magenta.toFixed(2)}% M\n${amarillo.toFixed(2)}% Y\n${negro.toFixed(2)}% K`;
 
             cerrarModal();
         }
