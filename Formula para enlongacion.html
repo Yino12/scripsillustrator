@@ -6,6 +6,7 @@
     <title>Calculadora de Fórmula</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <style>
+        /* Estilos existentes */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -325,7 +326,6 @@
     </style>
 </head>
 <body>
-    <!-- El resto del código HTML permanece igual -->
     <div class="main-container">
         <div class="historial-container">
             <h3>Historial:</h3>
@@ -471,11 +471,11 @@
             </div>
             <div id="colorPreview" style="width: 100px; height: 100px; border: 1px solid #000; margin: 10px auto;"></div>
             <button onclick="guardarColor()">Guardar Color</button>
+            <button onclick="limpiarValores()">Limpiar</button>
         </div>
     </div>
 
     <script>
-        // El código JavaScript permanece igual
         var historial = [];
         var colores = [];
         var colorActualIndex = null;
@@ -604,6 +604,17 @@
             colorBoxes[colorActualIndex].textContent = `${cian.toFixed(2)}% C\n${magenta.toFixed(2)}% M\n${amarillo.toFixed(2)}% Y\n${negro.toFixed(2)}% K`;
 
             cerrarModal();
+        }
+
+        function limpiarValores() {
+            ['cian', 'magenta', 'amarillo', 'negro'].forEach(function(color) {
+                var sliderValue = parseFloat(document.getElementById(color + "-slider").value);
+                var roundedValue = Math.round(sliderValue);
+                document.getElementById(color + "-slider").value = roundedValue;
+                document.getElementById(color + "Input").value = roundedValue;
+                document.getElementById(color + "-value").textContent = roundedValue.toFixed(2);
+            });
+            actualizarColor();
         }
 
         function calcular() {
