@@ -401,35 +401,35 @@
                 <table>
                     <tr>
                         <td>Cliente:</td>
-                        <td id="clientInfo" class="pop-up"></td>
+                        <td id="clientInfo" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
                     </tr>
                     <tr>
                         <td>Número de OP:</td>
-                        <td id="opInfo" class="pop-up"></td>
+                        <td id="opInfo" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
                     </tr>
                     <tr>
                         <td>Unidad-mm:</td>
-                        <td id="resultado1" class="pop-up"></td>
+                        <td id="resultado1" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
                     </tr>
                     <tr>
                         <td>Unidad-cm:</td>
-                        <td id="resultado2" class="pop-up"></td>
+                        <td id="resultado2" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
                     </tr>
                     <tr>
                         <td>Enlongación:</td>
-                        <td id="resultado3" class="pop-up"></td>
+                        <td id="resultado3" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
                     </tr>
                     <tr>
                         <td>Enlongación API:</td>
-                        <td id="resultado4" class="pop-up"></td>
+                        <td id="resultado4" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
                     </tr>
                     <tr>
                         <td>Medida de repetición al Avance:</td>
-                        <td id="resultado5" class="pop-up"></td>
+                        <td id="resultado5" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
                     </tr>
                     <tr>
                         <td>Medida Gap al Avance:</td>
-                        <td id="resultado6" class="pop-up"></td>
+                        <td id="resultado6" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
                     </tr>
                     <tr>
                         <td>Colores:</td>
@@ -641,16 +641,16 @@
                 cantidadColores: cantidadColores,
                 colores: colores,
                 resultados: {
-                    unidadMm: unidadMm.toFixed(2),
-                    unidadCm: unidadCm.toFixed(2),
+                    unidadMm: unidadMm.toFixed(3),
+                    unidadCm: unidadCm.toFixed(3),
                     enlongacion: enlongacion.toFixed(3),
-                    enlongacionApi: enlongacionApi.toFixed(2),
-                    medidaRepeticionAvance: medidaRepeticionAvance.toFixed(2)
+                    enlongacionApi: enlongacionApi.toFixed(3),
+                    medidaRepeticionAvance: medidaRepeticionAvance.toFixed(3)
                 }
             };
 
             if (sacarGapAlAvance > 1) {
-                operacion.resultados.sacarGapAlAvance = sacarGapAlAvance.toFixed(2);
+                operacion.resultados.sacarGapAlAvance = sacarGapAlAvance.toFixed(3);
             }
 
             historial.push(operacion);
@@ -754,6 +754,13 @@
             var nombreArchivo = `${dia}-${mes}-${anio}_Historial_Resultados.xlsx`;
 
             XLSX.writeFile(wb, nombreArchivo);
+        }
+
+        function copiarAlPortapapeles(element) {
+            var texto = element.innerText;
+            navigator.clipboard.writeText(texto).catch(function(err) {
+                console.error('Error al copiar al portapapeles: ', err);
+            });
         }
 
         window.onload = function() {
