@@ -618,6 +618,16 @@
             actualizarColor();
         }
 
+        function formatNumber(value) {
+            let strValue = value.toString().replace('.', ',');
+            if (strValue.endsWith(',000')) {
+                strValue = strValue.substring(0, strValue.length - 4);
+            } else if (strValue.endsWith(',00')) {
+                strValue = strValue.substring(0, strValue.length - 3);
+            }
+            return strValue;
+        }
+
         function calcular() {
             var clientName = document.getElementById("clientName").value;
             var opNumber = document.getElementById("opNumber").value;
@@ -700,11 +710,11 @@
         function mostrarResultados(operacion) {
             document.getElementById("clientInfo").innerHTML = operacion.clientName;
             document.getElementById("opInfo").innerHTML = operacion.opNumber;
-            document.getElementById("resultado1").innerHTML = operacion.resultados.unidadMm + " mm";
-            document.getElementById("resultado2").innerHTML = operacion.resultados.unidadCm + " cm";
-            document.getElementById("resultado3").innerHTML = operacion.resultados.enlongacion;
-            document.getElementById("resultado4").innerHTML = operacion.resultados.enlongacionApi + " mm";
-            document.getElementById("resultado5").innerHTML = operacion.resultados.medidaRepeticionAvance + " mm";
+            document.getElementById("resultado1").innerHTML = formatNumber(operacion.resultados.unidadMm) + " mm";
+            document.getElementById("resultado2").innerHTML = formatNumber(operacion.resultados.unidadCm) + " cm";
+            document.getElementById("resultado3").innerHTML = formatNumber(operacion.resultados.enlongacion);
+            document.getElementById("resultado4").innerHTML = formatNumber(operacion.resultados.enlongacionApi) + " mm";
+            document.getElementById("resultado5").innerHTML = formatNumber(operacion.resultados.medidaRepeticionAvance) + " mm";
 
             var coloresResultContainer = document.getElementById("colorBoxesResult");
             coloresResultContainer.innerHTML = '';
@@ -716,7 +726,7 @@
             });
 
             if (operacion.resultados.sacarGapAlAvance) {
-                document.getElementById("resultado6").innerHTML = operacion.resultados.sacarGapAlAvance + " mm";
+                document.getElementById("resultado6").innerHTML = formatNumber(operacion.resultados.sacarGapAlAvance) + " mm";
             } else {
                 document.getElementById("resultado6").innerHTML = "";
             }
@@ -757,7 +767,7 @@
         }
 
         function copiarAlPortapapeles(element) {
-            var texto = element.innerText;
+            var texto = element.innerText.split(' ')[0];
             navigator.clipboard.writeText(texto).catch(function(err) {
                 console.error('Error al copiar al portapapeles: ', err);
             });
