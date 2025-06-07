@@ -1,781 +1,531 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Fórmula</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <title>OP Task Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Estilos existentes */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            background-color: #212121;
-            color: #E0E0E0;
-            font-size: 18px;
+        .history-entry:nth-child(odd) {
+            background-color: rgba(249, 250, 251, 0.5);
         }
-
-        .main-container {
-            display: flex;
-            width: 100%;
-            gap: 20px;
+        .history-entry:nth-child(even) {
+            background-color: rgba(229, 231, 235, 0.5);
         }
-
-        .historial-container {
-            flex: 2;
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
         }
-
-        .form-container {
-            flex: 1;
-        }
-
-        .results-container {
-            flex: 1;
-        }
-
-        .historial-container, .form-container, .results-container {
-            padding: 20px;
-            border: 1px solid #424242;
-            border-radius: 5px;
-            background-color: #2E2E2E;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 15px;
-        }
-
-        label {
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        input, select, button {
-            padding: 10px;
-            border: 1px solid #424242;
-            border-radius: 4px;
-            font-size: 18px;
-            background-color: #3E3E3E;
-            color: #E0E0E0;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .results table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .results th, .results td {
-            border: 1px solid #424242;
-            padding: 8px;
-            text-align: left;
-            font-size: 18px;
-        }
-
-        .results th {
-            background-color: #3E3E3E;
-        }
-
-        .results td:last-child {
-            text-align: right;
-            font-weight: bold;
-        }
-
-        .results tr:nth-child(even) {
-            background-color: #3E3E3E;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            border: 1px solid #424242;
-            padding: 8px;
-            text-align: left;
-            font-size: 18px;
-        }
-
-        th {
-            background-color: #3E3E3E;
-        }
-
-        tr {
-            position: relative;
-        }
-
-        tr:hover {
-            background-color: #4A4A4A;
-            cursor: pointer;
-        }
-
-        .delete-btn {
-            background-color: #ff4444;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            font-size: 14px;
-            cursor: pointer;
-            display: none;
-            position: absolute;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        tr:hover .delete-btn {
-            display: block;
-        }
-
-        @keyframes popUp {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .pop-up {
-            animation: popUp 0.5s;
-        }
-
-        .color-box-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .color-box {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 1px solid #000;
-            color: white;
-            font-size: 8px;
-            text-shadow: 1px 1px 1px black;
-            white-space: pre;
-            text-align: center;
-        }
-
-        .color-box-result {
-            width: 35px;
-            height: 35px;
-            margin: 1px;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.4);
-        }
-
-        .modal-content {
-            background-color: #2E2E2E;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #424242;
-            width: 50%;
-            max-height: 80%;
-            overflow: hidden;
-            color: #E0E0E0;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover, .close:focus {
-            color: #E0E0E0;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .slider-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .slider-container input[type="number"] {
-            width: 60px;
-        }
-
-        .color-slider {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .color-slider .slider-label {
-            width: 30px;
-            margin-right: 10px;
-        }
-
-        .color-slider .slider-value {
-            width: 50px;
-            margin-left: 10px;
-            text-align: right;
-        }
-
-        .slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 10px;
-            border-radius: 5px;
-            outline: none;
-        }
-
-        #cian-gradient {
-            background: linear-gradient(to right, white, #00FFFF);
-        }
-
-        #magenta-gradient {
-            background: linear-gradient(to right, white, #FF00FF);
-        }
-
-        #amarillo-gradient {
-            background: linear-gradient(to right, white, #FFFF00);
-        }
-
-        #negro-gradient {
-            background: linear-gradient(to right, white, #000000);
-        }
-
-        #cian-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #00FFFF;
-            cursor: pointer;
-        }
-
-        #magenta-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #FF00FF;
-            cursor: pointer;
-        }
-
-        #amarillo-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #FFFF00;
-            cursor: pointer;
-        }
-
-        #negro-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #000000;
-            cursor: pointer;
-        }
-
-        .slider-label {
-            color: black;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body>
-    <div class="main-container">
-        <div class="historial-container">
-            <h3>Historial:</h3>
-            <table id="historialTable">
-                <thead>
-                    <tr>
-                        <th>Nombre del Cliente</th>
-                        <th>Número de OP</th>
-                        <th>Colores</th>
-                        <th>Fecha y Hora</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Las filas se añadirán aquí -->
-                </tbody>
-            </table>
-        </div>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-10">
+            <h1 class="text-4xl font-bold text-indigo-800 mb-2">OP Task Manager</h1>
+            <p class="text-gray-600">Track and manage your projects efficiently</p>
+        </header>
 
-        <div class="form-container">
-            <h2 style="text-align: center;">Calculadora de Fórmula</h2>
-            <div class="form-group">
-                <label for="clientName">Nombre del Cliente:</label>
-                <input type="text" id="clientName" placeholder="Ingrese el nombre del cliente">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Create OP Form -->
+            <div class="bg-white rounded-xl shadow-md p-6 lg:col-span-1 h-fit">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Create New OP</h2>
+                <form id="opForm" class="space-y-4">
+                    <div>
+                        <label for="opNumber" class="block text-sm font-medium text-gray-700 mb-1">OP Number*</label>
+                        <input type="text" id="opNumber" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+
+                    <div>
+                        <label for="opName" class="block text-sm font-medium text-gray-700 mb-1">OP Name*</label>
+                        <input type="text" id="opName" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+
+                    <div>
+                        <label for="company" class="block text-sm font-medium text-gray-700 mb-1">Company Name*</label>
+                        <input type="text" id="company" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+
+                    <div>
+                        <label for="version" class="block text-sm font-medium text-gray-700 mb-1">Version*</label>
+                        <input type="text" id="version" required value="1.0"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-200 flex items-center justify-center">
+                        <i class="fas fa-plus-circle mr-2"></i> Create OP
+                    </button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="opNumber">Número de OP:</label>
-                <input type="text" id="opNumber" placeholder="Ingrese el número de OP">
-            </div>
-            <div class="form-group">
-                <label for="inputValue">Valor de entrada:</label>
-                <input type="number" id="inputValue" step="any" placeholder="Ingrese un valor" value="96">
-            </div>
-            <div class="form-group">
-                <label for="calibre">Seleccione un calibre:</label>
-                <select id="calibre">
-                    <option value="9.9">0.67</option>
-                    <option value="59.9">0.45</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="repeticionesAvance">#Repeticiones Avance:</label>
-                <input type="number" id="repeticionesAvance" step="any" placeholder="Ingrese el valor de repeticiones" value="1">
-            </div>
-            <div class="form-group">
-                <label for="sacarGap">Sacar Gap al Avance:</label>
-                <input type="number" id="sacarGap" step="any" placeholder="Ingrese el valor de sacar gap" value="0">
-            </div>
-            <div class="form-group">
-                <label for="cantidadColores">Cantidad de Colores:</label>
-                <select id="cantidadColores" onchange="mostrarColores()">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4" selected>4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                </select>
-            </div>
-            <div id="coloresContainer" class="form-group">
-                <div class="color-box-container" id="colorBoxes">
-                    <!-- Los cuadros de colores se añadirán aquí -->
+
+            <!-- Current OP Display -->
+            <div class="bg-white rounded-xl shadow-md p-6 lg:col-span-2 mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800">Current OP</h2>
+                    <div class="flex items-center space-x-4">
+                        <div id="currentOpBadge" class="px-4 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-medium hidden">
+                            Active
+                        </div>
+                        <div class="relative">
+                            <button id="historyDropdownButton" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition duration-200 flex items-center">
+                                <i class="fas fa-history mr-2"></i> History
+                            </button>
+                            <div id="historyDropdown" class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 hidden">
+                                <div class="p-2 border-b border-gray-200">
+                                    <input type="text" id="historySearch" placeholder="Search..." class="w-full px-2 py-1 border border-gray-300 rounded">
+                                </div>
+                                <div class="max-h-60 overflow-y-auto">
+                                    <ul id="historyListDropdown" class="py-1">
+                                        <!-- History entries will be added here -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <button onclick="calcular()">Calcular</button>
-            <button onclick="exportarAExcel()">Exportar a Excel</button>
-        </div>
 
-        <div class="results-container">
-            <h3>Resultados:</h3>
-            <div class="results">
-                <table>
-                    <tr>
-                        <td>Cliente:</td>
-                        <td id="clientInfo" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
-                    </tr>
-                    <tr>
-                        <td>Número de OP:</td>
-                        <td id="opInfo" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
-                    </tr>
-                    <tr>
-                        <td>Unidad-mm:</td>
-                        <td id="resultado1" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
-                    </tr>
-                    <tr>
-                        <td>Unidad-cm:</td>
-                        <td id="resultado2" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
-                    </tr>
-                    <tr>
-                        <td>Enlongación:</td>
-                        <td id="resultado3" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
-                    </tr>
-                    <tr>
-                        <td>Enlongación API:</td>
-                        <td id="resultado4" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
-                    </tr>
-                    <tr>
-                        <td>Medida de repetición al Avance:</td>
-                        <td id="resultado5" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
-                    </tr>
-                    <tr>
-                        <td>Medida Gap al Avance:</td>
-                        <td id="resultado6" class="pop-up" onclick="copiarAlPortapapeles(this)"></td>
-                    </tr>
-                    <tr>
-                        <td>Colores:</td>
-                        <td id="coloresResult" class="pop-up">
-                            <div class="color-box-container" id="colorBoxesResult"></div>
-                        </td>
-                    </tr>
-                </table>
+                <div id="currentOpContainer" class="hidden mb-8 fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-600 font-medium">OP Number</p>
+                            <p id="currentOpNumber" class="text-lg font-semibold">-</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-600 font-medium">Name</p>
+                            <p id="currentOpName" class="text-lg font-semibold">-</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-600 font-medium">Company</p>
+                            <p id="currentCompany" class="text-lg font-semibold">-</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-600 font-medium">Version</p>
+                            <p id="currentVersion" class="text-lg font-semibold">-</p>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-3">
+                        <button id="updateBtn" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition duration-200 flex items-center">
+                            <i class="fas fa-pencil-alt mr-2"></i> Update Version
+                        </button>
+                        <button id="completeBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-200 flex items-center">
+                            <i class="fas fa-check-circle mr-2"></i> Complete OP
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Calculator Section -->
+                <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Calculator</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label for="caliber" class="block text-sm font-medium text-gray-700 mb-1">Caliber</label>
+                            <select id="caliber" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="0.67">0.67</option>
+                                <option value="0.45">0.45</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="zValue" class="block text-sm font-medium text-gray-700 mb-1">Z Value</label>
+                            <input type="number" step="any" id="zValue"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <button id="calculateBtn"
+                            class="md:col-span-2 bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-200 md:mt-6 h-fit">
+                            Calculate
+                        </button>
+                    </div>
+
+                    <div class="mt-6 space-y-4">
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-600 font-medium">Result (mm)</p>
+                            <p id="calculationResult" class="text-lg font-semibold cursor-pointer hover:text-indigo-700 transition duration-150">-</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-600 font-medium">Elongation (mm)</p>
+                            <p id="elongationResult" class="text-lg font-semibold cursor-pointer hover:text-indigo-700 transition duration-150">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="emptyState" class="text-center py-10">
+                    <i class="fas fa-folder-open text-gray-300 text-5xl mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-700 mb-1">No Active OP</h3>
+                    <p class="text-gray-500">Create a new OP to get started</p>
+                </div>
+
+                <!-- OP History Section -->
+                <h3 class="text-xl font-semibold text-gray-800 mt-10 mb-4">OP History</h3>
+                <div class="overflow-hidden rounded-lg border border-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">OP Number</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Version</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Calculation</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyList" class="bg-white divide-y divide-gray-200">
+                            <!-- History entries will be added here -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="colorModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="cerrarModal()">&times;</span>
-            <h2>Seleccionar Color</h2>
-            <div class="color-slider" id="cian-gradient">
-                <span class="slider-label">C:</span>
-                <input type="range" id="cian-slider" min="0" max="100" value="0" step="0.01" class="slider" oninput="actualizarValor('cian')">
-                <input type="number" id="cianInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('cian')">
-                <span class="slider-value"><span id="cian-value">0.00</span>%</span>
+    <!-- Version Update Modal -->
+    <div id="versionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold">Update Version</h3>
+                <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div class="color-slider" id="magenta-gradient">
-                <span class="slider-label">M:</span>
-                <input type="range" id="magenta-slider" min="0" max="100" value="0" step="0.01" class="slider" oninput="actualizarValor('magenta')">
-                <input type="number" id="magentaInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('magenta')">
-                <span class="slider-value"><span id="magenta-value">0.00</span>%</span>
+            <div class="mb-4">
+                <label for="newVersion" class="block text-sm font-medium text-gray-700 mb-1">New Version</label>
+                <input type="text" id="newVersion"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
             </div>
-            <div class="color-slider" id="amarillo-gradient">
-                <span class="slider-label">Y:</span>
-                <input type="range" id="amarillo-slider" min="0" max="100" value="0" step="0.01" class="slider" oninput="actualizarValor('amarillo')">
-                <input type="number" id="amarilloInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('amarillo')">
-                <span class="slider-value"><span id="amarillo-value">0.00</span>%</span>
-            </div>
-            <div class="color-slider" id="negro-gradient">
-                <span class="slider-label">K:</span>
-                <input type="range" id="negro-slider" min="0" max="100" value="0" step="0.01" class="slider" oninput="actualizarValor('negro')">
-                <input type="number" id="negroInput" min="0" max="100" step="0.01" value="0" onchange="actualizarSlider('negro')">
-                <span class="slider-value"><span id="negro-value">0.00</span>%</span>
-            </div>
-            <div id="colorPreview" style="width: 100px; height: 100px; border: 1px solid #000; margin: 10px auto;"></div>
-            <button onclick="guardarColor()">Guardar Color</button>
-            <button onclick="limpiarValores()">Limpiar</button>
+            <button id="confirmUpdate"
+                class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-200">
+                Update Version
+            </button>
         </div>
     </div>
 
     <script>
-        var historial = [];
-        var colores = [];
-        var colorActualIndex = null;
+        // DOM Elements
+        const opForm = document.getElementById('opForm');
+        const currentOpContainer = document.getElementById('currentOpContainer');
+        const emptyState = document.getElementById('emptyState');
+        const historyList = document.getElementById('historyList');
+        const historyListDropdown = document.getElementById('historyListDropdown');
+        const currentOpBadge = document.getElementById('currentOpBadge');
+        const versionModal = document.getElementById('versionModal');
+        const closeModal = document.getElementById('closeModal');
+        const updateBtn = document.getElementById('updateBtn');
+        const completeBtn = document.getElementById('completeBtn');
+        const confirmUpdate = document.getElementById('confirmUpdate');
+        const historyDropdownButton = document.getElementById('historyDropdownButton');
+        const historyDropdown = document.getElementById('historyDropdown');
+        const historySearch = document.getElementById('historySearch');
 
-        document.getElementById('sacarGap').addEventListener('input', function() {
-            if (this.value > 0) {
-                document.getElementById('repeticionesAvance').value = 2;
+        // Current OP elements
+        const currentOpNumber = document.getElementById('currentOpNumber');
+        const currentOpName = document.getElementById('currentOpName');
+        const currentCompany = document.getElementById('currentCompany');
+        const currentVersion = document.getElementById('currentVersion');
+        const newVersionInput = document.getElementById('newVersion');
+
+        // Calculator Elements
+        const zValueInput = document.getElementById('zValue');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const calculationResult = document.getElementById('calculationResult');
+        const elongationResult = document.getElementById('elongationResult');
+        const caliberSelect = document.getElementById('caliber');
+
+        // Data
+        let ops = JSON.parse(localStorage.getItem('ops')) || [];
+        let currentOp = JSON.parse(localStorage.getItem('currentOp')) || null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCurrentOp();
+            renderHistory();
+            renderHistoryDropdown();
+
+            historyDropdownButton.addEventListener('click', () => {
+                historyDropdown.classList.toggle('hidden');
+            });
+
+            historySearch.addEventListener('input', () => {
+                renderHistoryDropdown();
+            });
+        });
+
+        // Form submission
+        opForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const opNumber = document.getElementById('opNumber').value;
+            const opName = document.getElementById('opName').value;
+            const company = document.getElementById('company').value;
+            const version = document.getElementById('version').value;
+            const createdAt = new Date().toLocaleString();
+
+            const op = {
+                opNumber,
+                opName,
+                company,
+                version,
+                createdAt,
+                updatedAt: createdAt,
+                status: 'active',
+                calculations: []
+            };
+
+            // Set as current OP
+            currentOp = op;
+            localStorage.setItem('currentOp', JSON.stringify(currentOp));
+
+            // Add to history
+            ops.unshift(op);
+            localStorage.setItem('ops', JSON.stringify(ops));
+
+            // Reset form
+            opForm.reset();
+            document.getElementById('version').value = '1.0';
+
+            renderCurrentOp();
+            renderHistory();
+            renderHistoryDropdown();
+        });
+
+        // Update version
+        updateBtn.addEventListener('click', () => {
+            if (currentOp) {
+                newVersionInput.value = currentOp.version;
+                versionModal.classList.remove('hidden');
             }
         });
 
-        function actualizarValor(color) {
-            var sliderValue = document.getElementById(color + "-slider").value;
-            document.getElementById(color + "Input").value = sliderValue;
-            document.getElementById(color + "-value").textContent = parseFloat(sliderValue).toFixed(2);
-            actualizarColor();
-        }
+        closeModal.addEventListener('click', () => {
+            versionModal.classList.add('hidden');
+        });
 
-        function actualizarSlider(color) {
-            var inputValue = document.getElementById(color + "Input").value;
-            document.getElementById(color + "-slider").value = inputValue;
-            actualizarColor();
-        }
+        confirmUpdate.addEventListener('click', () => {
+            const newVersion = newVersionInput.value;
+            if (newVersion && currentOp) {
+                currentOp.version = newVersion;
+                currentOp.updatedAt = new Date().toLocaleString();
+                localStorage.setItem('currentOp', JSON.stringify(currentOp));
 
-        function mostrarColores() {
-            var cantidad = parseInt(document.getElementById("cantidadColores").value);
-            var container = document.getElementById("colorBoxes");
-            container.innerHTML = '';
+                // Update in history
+                const opIndex = ops.findIndex(op => op.opNumber === currentOp.opNumber && op.status === 'active');
+                if (opIndex !== -1) {
+                    ops[opIndex] = currentOp;
+                    localStorage.setItem('ops', JSON.stringify(ops));
+                }
 
-            colores = [];
-            for (var i = 0; i < cantidad; i++) {
-                var colorBox = document.createElement("div");
-                colorBox.className = "color-box";
-                colorBox.style.backgroundColor = getColorPorDefecto(i);
-                colorBox.textContent = getColorTextPorDefecto(i);
-                colorBox.onclick = (function(index) {
-                    return function() {
-                        abrirModalColor(index);
+                renderCurrentOp();
+                renderHistory();
+                versionModal.classList.add('hidden');
+            }
+        });
+
+        // Complete OP
+        completeBtn.addEventListener('click', () => {
+            if (currentOp) {
+                currentOp.status = 'completed';
+                currentOp.updatedAt = new Date().toLocaleString();
+
+                // Update in history
+                const opIndex = ops.findIndex(op => op.opNumber === currentOp.opNumber && op.status === 'active');
+                if (opIndex !== -1) {
+                    ops[opIndex] = currentOp;
+                    localStorage.setItem('ops', JSON.stringify(ops));
+                }
+
+                currentOp = null;
+                localStorage.removeItem('currentOp');
+
+                renderCurrentOp();
+                renderHistory();
+                renderHistoryDropdown();
+            }
+        });
+
+        // Calculator functionality
+        calculateBtn.addEventListener('click', () => {
+            calculateResults();
+        });
+
+        function calculateResults(zValue = null, caliber = null) {
+            const zValueToUse = zValue !== null ? zValue : parseFloat(zValueInput.value);
+            const caliberToUse = caliber !== null ? caliber : caliberSelect.value;
+
+            if (!isNaN(zValueToUse)) {
+                // Calculate mm result
+                let mmResult, elongation;
+
+                if (caliberToUse === '0.67') {
+                    mmResult = zValueToUse * 3.175;
+                    // Calculate elongation for 0.67
+                    elongation = mmResult - 9.9;
+                } else { // 0.45
+                    mmResult = zValueToUse * 3.175;
+                    // Calculate elongation for 0.45
+                    elongation = mmResult - 5.99;
+                }
+
+                const formattedMmResult = mmResult.toFixed(3).replace('.', ',') + ' mm';
+                const formattedElongation = elongation.toFixed(3).replace('.', ',') + ' mm';
+
+                calculationResult.textContent = formattedMmResult;
+                elongationResult.textContent = formattedElongation;
+
+                // Store calculation if there's a current OP
+                if (currentOp) {
+                    const calculation = {
+                        date: new Date().toLocaleString(),
+                        caliber: caliberToUse,
+                        zValue: zValueToUse,
+                        mmResult: mmResult.toFixed(3),
+                        elongation: elongation.toFixed(3),
+                        formattedResult: formattedMmResult,
+                        formattedElongation: formattedElongation
                     };
-                })(i);
-                container.appendChild(colorBox);
-                colores.push(getColorPorDefecto(i));
-            }
-        }
 
-        function getColorPorDefecto(index) {
-            var coloresPorDefecto = [
-                "rgb(0, 255, 255)", "rgb(255, 0, 255)", "rgb(255, 255, 0)", "rgb(0, 0, 0)",
-                "rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(255, 255, 255)"
-            ];
-            return coloresPorDefecto[index];
-        }
+                    currentOp.calculations.push(calculation);
+                    localStorage.setItem('currentOp', JSON.stringify(currentOp));
 
-        function getColorTextPorDefecto(index) {
-            var coloresTextoPorDefecto = [
-                "100.00% C\n0.00% M\n0.00% Y\n0.00% K", "0.00% C\n100.00% M\n0.00% Y\n0.00% K",
-                "0.00% C\n0.00% M\n100.00% Y\n0.00% K", "0.00% C\n0.00% M\n0.00% Y\n100.00% K",
-                "0.00% C\n0.00% M\n0.00% Y\n0.00% K", "0.00% C\n0.00% M\n0.00% Y\n0.00% K",
-                "0.00% C\n0.00% M\n0.00% Y\n0.00% K", "0.00% C\n0.00% M\n0.00% Y\n0.00% K"
-            ];
-            return coloresTextoPorDefecto[index];
-        }
-
-        function abrirModalColor(index) {
-            colorActualIndex = index;
-            var colorBox = document.getElementsByClassName("color-box")[index];
-            var colorText = colorBox.textContent.split('\n');
-
-            var cianValue = colorText[0] ? parseFloat(colorText[0]) : 0;
-            var magentaValue = colorText[1] ? parseFloat(colorText[1]) : 0;
-            var amarilloValue = colorText[2] ? parseFloat(colorText[2]) : 0;
-            var negroValue = colorText[3] ? parseFloat(colorText[3]) : 0;
-
-            document.getElementById("cian-slider").value = cianValue;
-            document.getElementById("cianInput").value = cianValue;
-            document.getElementById("cian-value").textContent = cianValue.toFixed(2);
-            document.getElementById("magenta-slider").value = magentaValue;
-            document.getElementById("magentaInput").value = magentaValue;
-            document.getElementById("magenta-value").textContent = magentaValue.toFixed(2);
-            document.getElementById("amarillo-slider").value = amarilloValue;
-            document.getElementById("amarilloInput").value = amarilloValue;
-            document.getElementById("amarillo-value").textContent = amarilloValue.toFixed(2);
-            document.getElementById("negro-slider").value = negroValue;
-            document.getElementById("negroInput").value = negroValue;
-            document.getElementById("negro-value").textContent = negroValue.toFixed(2);
-
-            var modal = document.getElementById("colorModal");
-            modal.style.display = "block";
-            actualizarColor();
-        }
-
-        function cerrarModal() {
-            var modal = document.getElementById("colorModal");
-            modal.style.display = "none";
-        }
-
-        function actualizarColor() {
-            var cian = parseFloat(document.getElementById("cian-slider").value);
-            var magenta = parseFloat(document.getElementById("magenta-slider").value);
-            var amarillo = parseFloat(document.getElementById("amarillo-slider").value);
-            var negro = parseFloat(document.getElementById("negro-slider").value);
-
-            var colorPreview = document.getElementById("colorPreview");
-            colorPreview.style.backgroundColor = `rgb(
-                ${Math.round(255 * (1 - cian / 100) * (1 - negro / 100))},
-                ${Math.round(255 * (1 - magenta / 100) * (1 - negro / 100))},
-                ${Math.round(255 * (1 - amarillo / 100) * (1 - negro / 100))}
-            )`;
-        }
-
-        function guardarColor() {
-            var cian = parseFloat(document.getElementById("cian-slider").value);
-            var magenta = parseFloat(document.getElementById("magenta-slider").value);
-            var amarillo = parseFloat(document.getElementById("amarillo-slider").value);
-            var negro = parseFloat(document.getElementById("negro-slider").value);
-
-            var color = `rgb(
-                ${Math.round(255 * (1 - cian / 100) * (1 - negro / 100))},
-                ${Math.round(255 * (1 - magenta / 100) * (1 - negro / 100))},
-                ${Math.round(255 * (1 - amarillo / 100) * (1 - negro / 100))}
-            )`;
-
-            colores[colorActualIndex] = color;
-
-            var colorBoxes = document.getElementsByClassName("color-box");
-            colorBoxes[colorActualIndex].style.backgroundColor = color;
-            colorBoxes[colorActualIndex].textContent = `${cian.toFixed(2)}% C\n${magenta.toFixed(2)}% M\n${amarillo.toFixed(2)}% Y\n${negro.toFixed(2)}% K`;
-
-            cerrarModal();
-        }
-
-        function limpiarValores() {
-            ['cian', 'magenta', 'amarillo', 'negro'].forEach(function(color) {
-                var sliderValue = parseFloat(document.getElementById(color + "-slider").value);
-                var roundedValue = Math.round(sliderValue);
-                document.getElementById(color + "-slider").value = roundedValue;
-                document.getElementById(color + "Input").value = roundedValue;
-                document.getElementById(color + "-value").textContent = roundedValue.toFixed(2);
-            });
-            actualizarColor();
-        }
-
-        function formatNumber(value) {
-            let strValue = value.toString().replace('.', ',');
-            if (strValue.endsWith(',000')) {
-                strValue = strValue.substring(0, strValue.length - 4);
-            } else if (strValue.endsWith(',00')) {
-                strValue = strValue.substring(0, strValue.length - 3);
-            }
-            return strValue;
-        }
-
-        function calcular() {
-            var clientName = document.getElementById("clientName").value;
-            var opNumber = document.getElementById("opNumber").value;
-            var inputValue = parseFloat(document.getElementById("inputValue").value);
-            var calibreValue = parseFloat(document.getElementById("calibre").value);
-            var repeticionesAvanceValue = parseFloat(document.getElementById("repeticionesAvance").value);
-            var sacarGapValue = parseFloat(document.getElementById("sacarGap").value);
-            var cantidadColores = document.getElementById("cantidadColores").value;
-
-            var unidadMm = inputValue * 3.175;
-            var unidadCm = unidadMm / 10;
-            var enlongacion = 99 / unidadCm - 100;
-            var enlongacionApi = unidadMm - calibreValue;
-            var medidaRepeticionAvance = unidadMm / repeticionesAvanceValue;
-            var sacarGapAlAvance = medidaRepeticionAvance - sacarGapValue;
-
-            var operacion = {
-                clientName: clientName,
-                opNumber: opNumber,
-                fechaHora: new Date().toLocaleString(),
-                cantidadColores: cantidadColores,
-                colores: colores,
-                resultados: {
-                    unidadMm: unidadMm.toFixed(3),
-                    unidadCm: unidadCm.toFixed(3),
-                    enlongacion: enlongacion.toFixed(3),
-                    enlongacionApi: enlongacionApi.toFixed(3),
-                    medidaRepeticionAvance: medidaRepeticionAvance.toFixed(3)
-                }
-            };
-
-            if (sacarGapAlAvance > 1) {
-                operacion.resultados.sacarGapAlAvance = sacarGapAlAvance.toFixed(3);
-            }
-
-            historial.push(operacion);
-            actualizarHistorial();
-            mostrarResultados(operacion);
-        }
-
-        function actualizarHistorial() {
-            var table = document.getElementById("historialTable").getElementsByTagName('tbody')[0];
-            table.innerHTML = '';
-
-            historial.forEach(function(operacion, index) {
-                var newRow = table.insertRow();
-                newRow.style.position = 'relative';
-                newRow.onclick = function(event) {
-                    if (event.target.className !== 'delete-btn') {
-                        mostrarResultados(operacion);
+                    // Update in history
+                    const opIndex = ops.findIndex(op => op.opNumber === currentOp.opNumber && op.status === 'active');
+                    if (opIndex !== -1) {
+                        ops[opIndex] = currentOp;
+                        localStorage.setItem('ops', JSON.stringify(ops));
                     }
-                };
-
-                var cell1 = newRow.insertCell(0);
-                var cell2 = newRow.insertCell(1);
-                var cell3 = newRow.insertCell(2);
-                var cell4 = newRow.insertCell(3);
-
-                cell1.innerHTML = operacion.clientName;
-                cell2.innerHTML = operacion.opNumber;
-                cell3.innerHTML = operacion.cantidadColores;
-                cell4.innerHTML = operacion.fechaHora;
-
-                var deleteButton = document.createElement('button');
-                deleteButton.className = 'delete-btn';
-                deleteButton.innerHTML = 'X';
-                deleteButton.onclick = function(event) {
-                    eliminarHistorial(index, event);
-                };
-                newRow.appendChild(deleteButton);
-            });
-        }
-
-        function eliminarHistorial(index, event) {
-            event.stopPropagation();
-            historial.splice(index, 1);
-            actualizarHistorial();
-        }
-
-        function mostrarResultados(operacion) {
-            document.getElementById("clientInfo").innerHTML = operacion.clientName;
-            document.getElementById("opInfo").innerHTML = operacion.opNumber;
-            document.getElementById("resultado1").innerHTML = formatNumber(operacion.resultados.unidadMm) + " mm";
-            document.getElementById("resultado2").innerHTML = formatNumber(operacion.resultados.unidadCm) + " cm";
-            document.getElementById("resultado3").innerHTML = formatNumber(operacion.resultados.enlongacion);
-            document.getElementById("resultado4").innerHTML = formatNumber(operacion.resultados.enlongacionApi) + " mm";
-            document.getElementById("resultado5").innerHTML = formatNumber(operacion.resultados.medidaRepeticionAvance) + " mm";
-
-            var coloresResultContainer = document.getElementById("colorBoxesResult");
-            coloresResultContainer.innerHTML = '';
-            operacion.colores.forEach(function(color) {
-                var colorBox = document.createElement("div");
-                colorBox.className = "color-box color-box-result";
-                colorBox.style.backgroundColor = color;
-                coloresResultContainer.appendChild(colorBox);
-            });
-
-            if (operacion.resultados.sacarGapAlAvance) {
-                document.getElementById("resultado6").innerHTML = formatNumber(operacion.resultados.sacarGapAlAvance) + " mm";
-            } else {
-                document.getElementById("resultado6").innerHTML = "";
+                }
             }
         }
 
-        function exportarAExcel() {
-            var wb = XLSX.utils.book_new();
-            var wsData = historial.map(function(operacion) {
-                var row = {
-                    "Nombre del Cliente": operacion.clientName,
-                    "Número de OP": operacion.opNumber,
-                    "Cantidad de Colores": operacion.cantidadColores,
-                    "Fecha y Hora": operacion.fechaHora,
-                    "Unidad-mm": operacion.resultados.unidadMm,
-                    "Unidad-cm": operacion.resultados.unidadCm,
-                    "Enlongación": operacion.resultados.enlongacion,
-                    "Enlongación API (mm)": operacion.resultados.enlongacionApi,
-                    "Medida de repetición al Avance": operacion.resultados.medidaRepeticionAvance
-                };
+        // Add click handlers for copying results
+        calculationResult.addEventListener('click', () => {
+            const text = calculationResult.textContent.replace(' mm', '');
+            navigator.clipboard.writeText(text);
+            calculationResult.classList.add('text-green-600');
+            setTimeout(() => calculationResult.classList.remove('text-green-600'), 300);
+        });
 
-                if (operacion.resultados.sacarGapAlAvance) {
-                    row["Sacar Gap al Avance"] = operacion.resultados.sacarGapAlAvance;
-                }
+        elongationResult.addEventListener('click', () => {
+            const text = elongationResult.textContent.replace(' mm', '');
+            navigator.clipboard.writeText(text);
+            elongationResult.classList.add('text-green-600');
+            setTimeout(() => elongationResult.classList.remove('text-green-600'), 300);
+        });
 
-                return row;
-            });
+        // Functions
+        function renderCurrentOp() {
+            if (currentOp) {
+                currentOpNumber.textContent = currentOp.opNumber;
+                currentOpName.textContent = currentOp.opName;
+                currentCompany.textContent = currentOp.company;
+                currentVersion.textContent = currentOp.version;
 
-            var ws = XLSX.utils.json_to_sheet(wsData);
-            XLSX.utils.book_append_sheet(wb, ws, "Historial");
-
-            var fechaActual = new Date();
-            var dia = fechaActual.getDate();
-            var mes = fechaActual.toLocaleString('default', { month: 'long' });
-            var anio = fechaActual.getFullYear();
-            var nombreArchivo = `${dia}-${mes}-${anio}_Historial_Resultados.xlsx`;
-
-            XLSX.writeFile(wb, nombreArchivo);
+                currentOpContainer.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+                currentOpBadge.classList.remove('hidden');
+            } else {
+                currentOpContainer.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                currentOpBadge.classList.add('hidden');
+            }
         }
 
-        function copiarAlPortapapeles(element) {
-            var texto = element.innerText.split(' ')[0];
-            navigator.clipboard.writeText(texto).catch(function(err) {
-                console.error('Error al copiar al portapapeles: ', err);
+        function renderHistory() {
+            historyList.innerHTML = '';
+
+            if (ops.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="7" class="px-6 py-4 text-center text-gray-500">No OP history yet</td>
+                `;
+                historyList.appendChild(row);
+                return;
+            }
+
+            ops.forEach(op => {
+                const row = document.createElement('tr');
+                row.className = 'history-entry cursor-pointer hover:bg-gray-50 transition duration-150';
+                row.addEventListener('click', () => {
+                    // Set clicked OP as current
+                    currentOp = op;
+                    localStorage.setItem('currentOp', JSON.stringify(currentOp));
+                    renderCurrentOp();
+
+                    // Set Z Value and Caliber from the last calculation
+                    if (op.calculations.length > 0) {
+                        const lastCalculation = op.calculations[op.calculations.length - 1];
+                        zValueInput.value = lastCalculation.zValue;
+                        caliberSelect.value = lastCalculation.caliber;
+                        calculateResults(lastCalculation.zValue, lastCalculation.caliber);
+                    }
+                });
+
+                const statusClass = op.status === 'active'
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-blue-100 text-blue-800';
+
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap font-medium">${op.opNumber}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${op.opName}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${op.company}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${op.version}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${op.createdAt}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 rounded-full text-xs font-medium ${statusClass}">
+                            ${op.status === 'active' ? 'Active' : 'Completed'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm">
+                        ${op.calculations.length > 0 ?
+                            `
+                            <div class="space-y-1">
+                                ${op.calculations.map(calc => `
+                                    <div>${calc.caliber}mm, Z${calc.zValue}:
+                                        <span class="font-medium">${calc.formattedResult}</span> (${calc.formattedElongation})
+                                    </div>
+                                `).join('')}
+                            </div>
+                            ` :
+                            '-'}
+                    </td>
+                `;
+                historyList.appendChild(row);
             });
         }
 
-        window.onload = function() {
-            mostrarColores();
-        };
+        function renderHistoryDropdown() {
+            historyListDropdown.innerHTML = '';
+            const searchTerm = historySearch.value.toLowerCase();
+
+            ops.filter(op => {
+                return op.opNumber.toLowerCase().includes(searchTerm) ||
+                       op.opName.toLowerCase().includes(searchTerm) ||
+                       op.company.toLowerCase().includes(searchTerm);
+            }).forEach(op => {
+                const li = document.createElement('li');
+                li.className = 'px-4 py-2 hover:bg-gray-100 cursor-pointer';
+                li.textContent = `${op.opNumber} - ${op.opName} (${op.company})`;
+                li.addEventListener('click', () => {
+                    currentOp = op;
+                    localStorage.setItem('currentOp', JSON.stringify(currentOp));
+                    renderCurrentOp();
+                    historyDropdown.classList.add('hidden');
+
+                    if (op.calculations.length > 0) {
+                        const lastCalculation = op.calculations[op.calculations.length - 1];
+                        zValueInput.value = lastCalculation.zValue;
+                        caliberSelect.value = lastCalculation.caliber;
+                        calculateResults(lastCalculation.zValue, lastCalculation.caliber);
+                    }
+                });
+                historyListDropdown.appendChild(li);
+            });
+        }
     </script>
 </body>
 </html>
